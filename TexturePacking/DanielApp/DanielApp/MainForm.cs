@@ -39,37 +39,6 @@ namespace DanielApp
             listBoxFolders.Items.Remove(selected);
         }
 
-        private void AppendLogLine(string logText)
-        {
-            try
-            {
-                lock (richTextBoxLogs)
-                {
-                    if (richTextBoxLogs.InvokeRequired)
-                    {
-                        richTextBoxLogs.BeginInvoke(new Action(() =>
-                        {
-                            richTextBoxLogs.AppendText(logText + "\n");
-                            richTextBoxLogs.SelectionStart = richTextBoxLogs.Text.Length;
-                            richTextBoxLogs.ScrollToCaret();
-                            Application.DoEvents();
-                        }));
-                    }
-                    else
-                    {
-                        richTextBoxLogs.AppendText(logText);
-                        richTextBoxLogs.SelectionStart = richTextBoxLogs.Text.Length;
-                        richTextBoxLogs.ScrollToCaret();
-                        Application.DoEvents();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                // ignored
-            }
-        }
-
         private void buttonNew_Click(object sender, EventArgs e)
         {
             using (var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog())
@@ -126,7 +95,7 @@ namespace DanielApp
         private void CreateV5TopDirectories(string folder)
         {
             //Create V5 Directories    
-            AppendLogLine("Creating V5 Directories");
+            Debug.WriteLine("Creating V5 Directories");
             Directory.CreateDirectory(Path.Combine(folder, "V5", "PACKSOURCE", "HD", "Frame0"));
             Directory.CreateDirectory(Path.Combine(folder, "V5", "PACKSOURCE", "HD", "Frame1"));
             Directory.CreateDirectory(Path.Combine(folder, "V5", "PACKSOURCE", "SD", "Frame0"));
@@ -141,7 +110,7 @@ namespace DanielApp
                     var v5Dir = Path.Combine(inputFolder, "V5");
                     if (Directory.Exists(v5Dir))
                     {
-                        AppendLogLine("Removing old files...");
+                        Debug.WriteLine("Removing old files...");
                         Directory.Delete(v5Dir, true);
                     }
 
@@ -177,9 +146,9 @@ namespace DanielApp
                 {
                     Debug.WriteLine(exception);
                     Debug.WriteLine($"Error in folder {inputFolder}");
-                    AppendLogLine(exception.Message);
-                    AppendLogLine(exception.StackTrace);
-                    AppendLogLine($"Error in folder {inputFolder}");
+                    Debug.WriteLine(exception.Message);
+                    Debug.WriteLine(exception.StackTrace);
+                    Debug.WriteLine($"Error in folder {inputFolder}");
                 }
         }
 
@@ -189,7 +158,7 @@ namespace DanielApp
             for (var i = array.Length; i-- > 0;)
             {
                 var file = array[i];
-                
+
                 var dirName = Path.GetDirectoryName(file);
                 var filename = Path.GetFileName(file).ReplaceFirst(".", "-");
                 File.Move(file, Path.Combine(dirName, filename));
@@ -213,7 +182,7 @@ namespace DanielApp
             var uiDir = FindDirectoryEndingIn(folderEndsWith, inputFolder);
             if (uiDir == null) throw new Exception($"No UI directories in {inputFolder}");
 
-            AppendLogLine($"Copying UI images from folder: {uiDir}");
+            Debug.WriteLine($"Copying UI images from folder: {uiDir}");
 
             var files = Directory.GetFiles(uiDir, "*.png", SearchOption.AllDirectories);
             foreach (var file in files)
@@ -240,7 +209,7 @@ namespace DanielApp
 
         private void CopyFrames(string resolution, PartsCsv partsCsv, string inputFolder)
         {
-            AppendLogLine($"Processing folder: {inputFolder}, resolution: {resolution}");
+            Debug.WriteLine($"Processing folder: {inputFolder}, resolution: {resolution}");
             resolution = resolution.ToUpper();
 
             var SHD_sourceFolder = FindDirectoryEndingIn($"-{resolution}", inputFolder);
@@ -293,7 +262,7 @@ namespace DanielApp
             if (e.Result != null) //something went wrong
             {
                 progressBar1.Visible = true;
-                AppendLogLine("Processing done...");
+                Debug.WriteLine("Processing done...");
                 return;
             }
 
@@ -375,7 +344,7 @@ namespace DanielApp
 
                 var modelName = rslt.Groups[1].Value;
                 Debug.WriteLine("Model name found : " + modelName);
-                AppendLogLine($"Running TexturePacker on {inputFolder} with Model Name: {modelName}");
+                Debug.WriteLine($"Running TexturePacker on {inputFolder} with Model Name: {modelName}");
 
                 LibGdxPacker(tpExecutable, libgdxTps, inputFolder, modelName);
                 SpriteKit(tpExecutable, spritekittps, inputFolder, modelName);
@@ -393,22 +362,22 @@ namespace DanielApp
         //    var outputSpriteKitHDFrame01 = Path.Combine(inputFolder, "V5", "Output", "HD", "SpriteKit");
 
         //    Debug.WriteLine("Packing SpriteKit Frame0 SD...");
-        //    AppendLogLine($"SpriteKit Packing: {sdFrame0}");
+        //    Debug.WriteLine($"SpriteKit Packing: {sdFrame0}");
         //    var p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "_Pack0.atlasc"}\" \"{sdFrame0}\" \"{tps}\"");
         //    p.WaitForExit();
 
         //    Debug.WriteLine("Packing SpriteKit Frame1 SD...");
-        //    AppendLogLine($"SpriteKit Packing: {sdFrame1}");
+        //    Debug.WriteLine($"SpriteKit Packing: {sdFrame1}");
         //    p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "_Pack1.atlasc"}\" \"{sdFrame1}\" \"{tps}\"");
         //    p.WaitForExit();
 
         //    Debug.WriteLine("Packing SpriteKit Frame0 HD...");
-        //    AppendLogLine($"SpriteKit Packing: {hdFrame0}");
+        //    Debug.WriteLine($"SpriteKit Packing: {hdFrame0}");
         //    p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack0.atlasc"}\" \"{hdFrame0}\" \"{tps}\"");
         //    p.WaitForExit();
 
         //    Debug.WriteLine("Packing SpriteKit Frame1 HD...");
-        //    AppendLogLine($"SpriteKit Packing: {hdFrame1}");
+        //    Debug.WriteLine($"SpriteKit Packing: {hdFrame1}");
         //    p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack1.atlasc"}\" \"{hdFrame1}\" \"{tps}\"");
         //    p.WaitForExit();
         //}
@@ -424,22 +393,22 @@ namespace DanielApp
         //    var outputLibgdxHDFrame01 = Path.Combine(inputFolder, "V5", "Output", "HD", "libgdx");
 
         //    Debug.WriteLine("Packing Libgdx Frame0 SD...");
-        //    AppendLogLine($"LibGDX Packing: {sdFrame0}");
+        //    Debug.WriteLine($"LibGDX Packing: {sdFrame0}");
         //    var p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "_Pack0.atlas"}\" \"{sdFrame0}\" \"{tpsFile}\"");
         //    p.WaitForExit();
 
         //    Debug.WriteLine("Packing Libgdx Frame1 SD...");
-        //    AppendLogLine($"LibGDX Packing: {sdFrame1}");
+        //    Debug.WriteLine($"LibGDX Packing: {sdFrame1}");
         //    p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{sdFrame1}\" \"{tpsFile}\"");
         //    p.WaitForExit();
 
         //    Debug.WriteLine("Packing Libgdx Frame0 HD...");
-        //    AppendLogLine($"LibGDX Packing: {hdFrame0}");
+        //    Debug.WriteLine($"LibGDX Packing: {hdFrame0}");
         //    p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0.atlas"}\" \"{hdFrame0}\" \"{tpsFile}\"");
         //    p.WaitForExit();
 
         //    Debug.WriteLine("Packing Libgdx Frame1 HD...");
-        //    AppendLogLine($"LibGDX Packing: {hdFrame1}");
+        //    Debug.WriteLine($"LibGDX Packing: {hdFrame1}");
         //    p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{hdFrame1}\" \"{tpsFile}\"");
         //    p.WaitForExit();
         //}
@@ -456,22 +425,22 @@ namespace DanielApp
             var outputSpriteKitHDFrame01 = Path.Combine(inputFolder, "V5", "Output", "HD", "SpriteKit");
 
             Debug.WriteLine("Packing SpriteKit Frame0 SD...");
-            AppendLogLine($"SpriteKit Packing: {sdFrame0}");
+            Debug.WriteLine($"SpriteKit Packing: {sdFrame0}");
             var p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "-SD_Pack0.atlasc"}\" \"{sdFrame0}\" \"{tps}\"");
             p.WaitForExit();
 
             Debug.WriteLine("Packing SpriteKit Frame1 SD...");
-            AppendLogLine($"SpriteKit Packing: {sdFrame1}");
+            Debug.WriteLine($"SpriteKit Packing: {sdFrame1}");
             p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "-SD_Pack1.atlasc"}\" \"{sdFrame1}\" \"{tps}\"");
             p.WaitForExit();
 
             Debug.WriteLine("Packing SpriteKit Frame0 HD...");
-            AppendLogLine($"SpriteKit Packing: {hdFrame0}");
+            Debug.WriteLine($"SpriteKit Packing: {hdFrame0}");
             p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack0.atlasc"}\" \"{hdFrame0}\" \"{tps}\"");
             p.WaitForExit();
 
             Debug.WriteLine("Packing SpriteKit Frame1 HD...");
-            AppendLogLine($"SpriteKit Packing: {hdFrame1}");
+            Debug.WriteLine($"SpriteKit Packing: {hdFrame1}");
             p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack1.atlasc"}\" \"{hdFrame1}\" \"{tps}\"");
             p.WaitForExit();
         }
@@ -487,22 +456,22 @@ namespace DanielApp
             var outputLibgdxHDFrame01 = Path.Combine(inputFolder, "V5", "Output", "HD", "libgdx");
 
             Debug.WriteLine("Packing Libgdx Frame0 SD...");
-            AppendLogLine($"LibGDX Packing: {sdFrame0}");
+            Debug.WriteLine($"LibGDX Packing: {sdFrame0}");
             var p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0.atlas"}\" \"{sdFrame0}\" \"{tpsFile}\"");
             p.WaitForExit();
 
             Debug.WriteLine("Packing Libgdx Frame1 SD...");
-            AppendLogLine($"LibGDX Packing: {sdFrame1}");
+            Debug.WriteLine($"LibGDX Packing: {sdFrame1}");
             p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1.atlas"}\" \"{sdFrame1}\" \"{tpsFile}\"");
             p.WaitForExit();
 
             Debug.WriteLine("Packing Libgdx Frame0 HD...");
-            AppendLogLine($"LibGDX Packing: {hdFrame0}");
+            Debug.WriteLine($"LibGDX Packing: {hdFrame0}");
             p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0.atlas"}\" \"{hdFrame0}\" \"{tpsFile}\"");
             p.WaitForExit();
 
             Debug.WriteLine("Packing Libgdx Frame1 HD...");
-            AppendLogLine($"LibGDX Packing: {hdFrame1}");
+            Debug.WriteLine($"LibGDX Packing: {hdFrame1}");
             p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{hdFrame1}\" \"{tpsFile}\"");
             p.WaitForExit();
         }
@@ -524,7 +493,7 @@ namespace DanielApp
             Process process;
             if (listBoxFolders.Items.Count <= 0)
             {
-                AppendLogLine("[Depot] No folders to processed...");
+                Debug.WriteLine("[Depot] No folders to processed...");
                 return;
             }
 
@@ -538,20 +507,20 @@ namespace DanielApp
                         var outputFolder = Path.Combine(inputFolder, "V5", "Output");
                         if (Directory.Exists(outputFolder))
                         {
-                            AppendLogLine($"[Depot] Copying files from {outputFolder} to {depotPath}\n");
+                            Debug.WriteLine($"[Depot] Copying files from {outputFolder} to {depotPath}\n");
                             process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /MIR");
                             process.WaitForExit();
                             process.Close();
                         }
 
-                        AppendLogLine("[Depot] Copying files from SAVE, MP3 and CSV files\n");
+                        Debug.WriteLine("[Depot] Copying files from SAVE, MP3 and CSV files\n");
                         process = Process.Start("robocopy", $"\"{inputFolder}\" \"{depotPath}\" *.sav *.csv *.mp3");
                         process.WaitForExit();
                         process.Close();
 
                         //foreach (var file in Directory.GetFiles(inputFolder, "*.*"))
                         //{
-                        //    AppendLogLine("[Depot] Copying files from SAVE, MP3 and CSV files\n");
+                        //    Debug.WriteLine("[Depot] Copying files from SAVE, MP3 and CSV files\n");
                         //    process = Process.Start("robocopy", $"\"{inputFolder}\" \"{depotPath}\" *.sav *.csv *.mp3");
                         //    process.WaitForExit();
                         //    process.Close();
@@ -565,7 +534,7 @@ namespace DanielApp
                             if (Directory.Exists(iconFolder))
                             {
                                 Directory.CreateDirectory(Path.Combine(depotPath, modelName));
-                                AppendLogLine($"[Depot] Copying icon files from {iconFolder} to {depotPath}\n");
+                                Debug.WriteLine($"[Depot] Copying icon files from {iconFolder} to {depotPath}\n");
                                 process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /MIR");
                                 process.WaitForExit();
                                 process.Close();
@@ -581,11 +550,11 @@ namespace DanielApp
             if (e.Result == null)
             {
                 RunDepot();
-                AppendLogLine("Processing done...");
+                Debug.WriteLine("Processing done...");
                 return;
             }
 
-            AppendLogLine("Processing ended with error/s...");
+            Debug.WriteLine("Processing ended with error/s...");
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -606,6 +575,8 @@ namespace DanielApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
+
             Task.Run(() =>
             {
                 Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
