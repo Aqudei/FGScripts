@@ -1,0 +1,38 @@
+//--lux:mat:5--
+//--lux:shader:7:0--
+// KeyShot material file - KeyShot [64 bit] v7.0.0
+#define shader 1 texture2_rgb {
+"texture_space" 1,
+"uv_projection" 4,
+"uv_scale_u" 1,
+"uv_scale_v" 1,
+"uv_depth" 1,
+"uv_shift_u" 0,
+"uv_shift_v" 0,
+"uv_angle" 0,
+"uv_unit_u" 1,
+"uv_unit_v" 1,
+"uv_flags" 62,
+"transform_obj_to_uv" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1,
+"texture" "C:/FG_Stuff/Figuromo/Global/A_V5/APP MODELS/ZZ_TMP/APP MODELS/22-005_Witch/Masks/01Skin.png",
+"brightness" 1,
+"contrast" 1,
+"bump_height" 1,
+"bump_mode" 0,
+"default_color" 0 0 0 0,
+"blend_color" off,
+"clamp_color" on,
+"sync" on,
+"attribute" "--MATMETA--AAAAAQAAAAEAAAAMAF8AXwBuAGEAbQBlAAAACgAAAAAOADAANwBEAHIAZQBzAHM=",
+}
+#define shader 2 lux_constant {
+"color" 0 0 0,
+"color" ! 1,
+"alpha" 1,
+}
+
+#define material "Flat Black" {
+flags 4096
+surface 2
+id 86
+}
