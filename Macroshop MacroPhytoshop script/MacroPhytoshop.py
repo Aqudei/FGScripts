@@ -34,6 +34,7 @@ class MacroPhytoshop(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
         self.parent = master
+        self.one_click = False
         self.parent.title("Macro Phytoshop")
         self.custom_font = font.Font(family=FONT_FAMILY, size=FONT_SIZE)
         self.custom_font2 = font.Font(
@@ -682,7 +683,20 @@ class MacroPhytoshop(tk.Frame):
                                 pady=self.get_padding())
 
         row += 1
-        # Row 6, button "generate part csv"
+
+        self.var_run_rgb_rest = tk.IntVar()
+        self.var_run_rgb_rest.set(1)
+        
+        # Row 6, checkbox "run rgb reset"
+        tk.Checkbutton(self.parent, font=self.custom_font, bg = 'orange',
+                  text="Include RGB reset in One Click",
+                  variable=self.var_run_rgb_rest).grid(row=row,
+                                                   column=2,
+                                                   columnspan=2,
+                                                   padx=self.get_padding(),
+                                                   pady=self.get_padding())
+
+        # Row 6, button "run rgb reset"
         tk.Button(self.parent, font=self.custom_font,
                   text="Run RGB reset",
                   command=self.run_rgb_reset).grid(row=row,
@@ -2507,12 +2521,14 @@ class MacroPhytoshop(tk.Frame):
                     self.process_shadows()
                     self.copy_originals()
                     self.resize_images()
+                    
+                    if self.var_run_rgb_rest.get() == 1:
+                        self.rgb_directory_entry.set(self.sd_path)
+                        self.run_rgb_reset()
 
-                    self.rgb_directory_entry.set(self.sd_path)
-                    self.run_rgb_reset()
+                        self.rgb_directory_entry.set(self.hd_path)
+                        self.run_rgb_reset()
 
-                    self.rgb_directory_entry.set(self.hd_path)
-                    self.run_rgb_reset()
                     self.__finalize(folder)
                 except Exception as e:
                     print(e)
