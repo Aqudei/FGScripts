@@ -144,11 +144,8 @@ namespace DanielApp
                 }
                 catch (Exception exception)
                 {
-                    Debug.WriteLine(exception);
-                    Debug.WriteLine($"Error in folder {inputFolder}");
                     Debug.WriteLine(exception.Message);
-                    Debug.WriteLine(exception.StackTrace);
-                    Debug.WriteLine($"Error in folder {inputFolder}");
+                    Debug.WriteLine($"Error:In folder {inputFolder}. Moving on to next model.");
                 }
         }
 
@@ -589,12 +586,14 @@ namespace DanielApp
                                           _real3DConfig = new List<Real3DV1>();
 
                                           if (string.IsNullOrWhiteSpace(options.StartDirectory))
-                                              return;
+                                          {
+                                              throw new Exception("Start directory cannot be empty. Please check start directory in your Macroscript.");
+                                          }
 
                                           if (!Directory.Exists(options.StartDirectory))
                                           {
-                                              throw new Exception("Start directory cannot be empty.\nPlease check start directory in your macroscript");
-                                          };
+                                              throw new Exception($"The folder {options.StartDirectory} does not exist. Please check start directory in your Macroscript.");
+                                          }
 
                                           using (var streamReader = new StreamReader(Path.Combine(options.StartDirectory, "Real3d_V1.csv")))
                                           using (var csv = new CsvReader(streamReader))
@@ -605,7 +604,9 @@ namespace DanielApp
                                           }
 
                                           if (!_real3DConfig.Any())
-                                              return;
+                                          {
+                                              throw new Exception("Unable to obtain model names from 'Read3d_V1.csv' file");
+                                          }
 
                                           var dirs = Directory.GetDirectories(options.StartDirectory);
                                           foreach (var dir in dirs)
