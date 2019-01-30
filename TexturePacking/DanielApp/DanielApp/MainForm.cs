@@ -592,7 +592,9 @@ namespace DanielApp
                                               return;
 
                                           if (!Directory.Exists(options.StartDirectory))
-                                              return;
+                                          {
+                                              throw new Exception("Start directory cannot be empty.\nPlease check start directory in your macroscript");
+                                          };
 
                                           using (var streamReader = new StreamReader(Path.Combine(options.StartDirectory, "Real3d_V1.csv")))
                                           using (var csv = new CsvReader(streamReader))
