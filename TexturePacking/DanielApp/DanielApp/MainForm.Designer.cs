@@ -161,7 +161,7 @@
             this.Controls.Add(this.buttonNew);
             this.Controls.Add(this.listBoxFolders);
             this.Name = "MainForm";
-            this.Text = "email me: fdeu.aalmine@gmail.com";
+            this.Text = "email me: fdeu.aalmine@gmail.com (updated on 301710H JAN 2019)";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
 

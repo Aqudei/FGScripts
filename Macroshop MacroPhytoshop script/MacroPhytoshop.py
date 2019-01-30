@@ -2564,7 +2564,7 @@ class MacroPhytoshop(tk.Frame):
 
     def __run_texturepacker(self):
 
-        pid = subprocess.Popen(['D:\\dev\\UPWORK\\FGScripts\\TexturePacking\\DanielApp\\DanielApp\\bin\Debug\\DanielApp.exe', '-d', self.directory_entry.get()]).pid
+        pid = subprocess.Popen(['C:\\Program Files (x86)\\Shade Soft\\TexturePackerSetup\\DanielApp.exe', '-d', self.directory_entry.get()]).pid
 
 root = tk.Tk()
 app = MacroPhytoshop(master=root)

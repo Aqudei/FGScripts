@@ -577,55 +577,63 @@ namespace DanielApp
         {
             Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
 
+
             Task.Run(() =>
             {
-                Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
-                    .WithParsed(options =>
-                    {
-                        _real3DConfig = new List<Real3DV1>();
 
-                        if (string.IsNullOrWhiteSpace(options.StartDirectory))
-                            return;
+                try
+                {
+                    Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
+                                      .WithParsed(options =>
+                                      {
+                                          _real3DConfig = new List<Real3DV1>();
 
-                        if (!Directory.Exists(options.StartDirectory))
-                            return;
+                                          if (string.IsNullOrWhiteSpace(options.StartDirectory))
+                                              return;
 
-                        using (var streamReader = new StreamReader(Path.Combine(options.StartDirectory, "Real3d_V1.csv")))
-                        using (var csv = new CsvReader(streamReader))
-                        {
-                            csv.Configuration.PrepareHeaderForMatch = (s, i) => s.Replace(" ", "").ToLower().Trim();
-                            var config = csv.GetRecords<Real3DV1>().ToList();
-                            _real3DConfig.AddRange(config.Where(dv1 => dv1.IsReady == 1));
-                        }
+                                          if (!Directory.Exists(options.StartDirectory))
+                                              return;
 
-                        if (!_real3DConfig.Any())
-                            return;
+                                          using (var streamReader = new StreamReader(Path.Combine(options.StartDirectory, "Real3d_V1.csv")))
+                                          using (var csv = new CsvReader(streamReader))
+                                          {
+                                              csv.Configuration.PrepareHeaderForMatch = (s, i) => s.Replace(" ", "").ToLower().Trim();
+                                              var config = csv.GetRecords<Real3DV1>().ToList();
+                                              _real3DConfig.AddRange(config.Where(dv1 => dv1.IsReady == 1));
+                                          }
 
-                        var dirs = Directory.GetDirectories(options.StartDirectory);
-                        foreach (var dir in dirs)
-                        {
-                            var modelName = ParseModelName(dir);
+                                          if (!_real3DConfig.Any())
+                                              return;
 
-                            if (_real3DConfig.All(dv1 => dv1.Model.Trim() != modelName.Trim()))
-                                continue;
+                                          var dirs = Directory.GetDirectories(options.StartDirectory);
+                                          foreach (var dir in dirs)
+                                          {
+                                              var modelName = ParseModelName(dir);
 
-                            if (!string.IsNullOrWhiteSpace(modelName))
-                                listBoxFolders.BeginInvoke(new Action(() =>
-                                {
-                                    listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName));
-                                }));
-                        }
+                                              if (_real3DConfig.All(dv1 => dv1.Model.Trim() != modelName.Trim()))
+                                                  continue;
 
-                        buttonRunPacker.BeginInvoke(new Action(() =>
-                        {
-                            buttonRunPacker.PerformClick();
-                        }));
-                    });
+                                              if (!string.IsNullOrWhiteSpace(modelName))
+                                                  listBoxFolders.BeginInvoke(new Action(() =>
+                                                  {
+                                                      listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName));
+                                                  }));
+                                          }
+
+                                          buttonRunPacker.BeginInvoke(new Action(() =>
+                                          {
+                                              buttonRunPacker.PerformClick();
+                                          }));
+                                      });
+                }
+                catch (Exception exception)
+                {
+                    Debug.WriteLine("Error: " + exception.Message);
+                    //Debug.WriteLine(exception.StackTrace);
+                }
             });
 
         }
-
-
 
         private string ParseModelName(string dirName)
         {
