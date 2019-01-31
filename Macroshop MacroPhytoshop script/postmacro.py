@@ -42,9 +42,18 @@ class PostMacro(object):
             return rslt.group(1).strip()
         return ''
 
+    def __get_eyegloss_prefix(self):
+        with open(self.parts_path, mode='rt', newline='') as fp:
+            reader = csv.reader(fp)
+            for idx, row in enumerate(reader):
+                if 'EyesGLOSS' in row[0]:
+                    return self.__get_prefix(row[0])
+
     def __process_parts(self):
         buffer = []
         tab3_col = 0
+        
+        eyegloss_prefix = self.__get_eyegloss_prefix()
 
         with open(self.parts_path, mode='rt', newline='') as fp:
             reader = csv.reader(fp)
@@ -70,8 +79,12 @@ class PostMacro(object):
 
                         eye_gloss_index = self.__get_indexes(
                             header, 'Part Gloss Image')[0]
-                        row[eye_gloss_index] = '{}EyesGLOSS_Clay1.'.format(
-                            self.__get_prefix(row[eye_gloss_index]))
+                        
+                        if eyegloss_prefix:
+                            row[eye_gloss_index] = '{}EyesGLOSS_Clay1.'.format(eyegloss_prefix)
+                        else:
+                            row[eye_gloss_index] = 'EyesGLOSS_Clay1.'
+                            
                     else:
                         row[header.index('#ofTabs')] = 2
 

@@ -9,7 +9,8 @@ import time
 
 TEST_RUNNING = True
 
-# FPS = 31 not in use
+FPS = 31
+
 WIDTH = 817
 HEIGHT = 900
 
@@ -91,38 +92,59 @@ def clean_up(model_folder):
         pass
 
 
+
+# def my_render_frames(path, frame_files, opts, dummy=False):
+
+#     animationInfo = lux.getAnimationInfo()
+#     frames = animationInfo['frames']
+
+#     zero_reran = False
+#     for current_frame_number in range(frames+1):
+
+#         lux.setAnimationFrame(current_frame_number)
+
+#         lux.renderImage(
+#             path=os.path.join(path, frame_files % (current_frame_number,)),
+#             width=WIDTH,
+#             height=HEIGHT,
+#             opts=opts
+#         )
+
+#         if not zero_reran and current_frame_number == 0:
+#             lux.setAnimationFrame(current_frame_number)
+
+#             lux.renderImage(
+#                 path=os.path.join(path, frame_files % (current_frame_number,)),
+#                 width=WIDTH,
+#                 height=HEIGHT,
+#                 opts=opts
+#             )
+
+#             zero_reran = True
+
+#         if dummy:
+#             break
+
 def my_render_frames(path, frame_files, opts, dummy=False):
 
-    animationInfo = lux.getAnimationInfo()
-    frames = animationInfo['frames']
-
-    zero_reran = False
-    for current_frame_number in range(frames+1):
-
-        lux.setAnimationFrame(current_frame_number)
+    if dummy:
+        lux.setAnimationFrame(0)
 
         lux.renderImage(
-            path=os.path.join(path, frame_files % (current_frame_number,)),
+            path=os.path.join(path, frame_files % (0,)),
             width=WIDTH,
             height=HEIGHT,
             opts=opts
-        )
+        )   
 
-        if not zero_reran and current_frame_number == 0:
-            lux.setAnimationFrame(current_frame_number)
-
-            lux.renderImage(
-                path=os.path.join(path, frame_files % (current_frame_number,)),
-                width=WIDTH,
-                height=HEIGHT,
-                opts=opts
-            )
-
-            zero_reran = True
-
-        if dummy:
-            break
-
+    lux.renderFrames(
+        folder = path,
+        frameFiles = frame_files,
+        width=WIDTH,
+        height=HEIGHT,
+        fps = FPS,
+        opts=opts
+    )
 
 def exclude_number_prefix(mask_name):
     match = rgx.search(mask_name)
