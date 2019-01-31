@@ -135,7 +135,9 @@ def my_render_frames(path, frame_files, opts, dummy=False):
             width=WIDTH,
             height=HEIGHT,
             opts=opts
-        )   
+        )
+           
+        return
 
     lux.renderFrames(
         folder = path,
