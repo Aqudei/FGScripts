@@ -84,7 +84,7 @@
             // 
             // buttonRunPacker
             // 
-            this.buttonRunPacker.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonRunPacker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRunPacker.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonRunPacker.Location = new System.Drawing.Point(412, 260);
             this.buttonRunPacker.Name = "buttonRunPacker";
@@ -128,7 +128,8 @@
             // 
             // richTextBoxLogs
             // 
-            this.richTextBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.richTextBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxLogs.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.richTextBoxLogs.BorderStyle = System.Windows.Forms.BorderStyle.None;

@@ -69,6 +69,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1EC7339E4521D990B61C84A747CB95BB"
+        "OwnerKey" = "8:_315753E2BADE4D6F82848F4CAF1BE73C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_247D6680F8A9E5830ADAF94062B104B6"
         "OwnerKey" = "8:_315753E2BADE4D6F82848F4CAF1BE73C"
         "MsmSig" = "8:_UNDEFINED"
@@ -395,6 +401,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_315753E2BADE4D6F82848F4CAF1BE73C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_1EC7339E4521D990B61C84A747CB95BB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1034,6 +1046,37 @@
                     }
                 }
             "SourcePath" = "8:Microsoft.WindowsAPICodePack.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_8B888B73159C4925870B007DA9470E89"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1EC7339E4521D990B61C84A747CB95BB"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Csv, Version=1.0.38.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_1EC7339E4521D990B61C84A747CB95BB"
+                    {
+                    "Name" = "8:Csv.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Csv.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B888B73159C4925870B007DA9470E89"
@@ -2688,15 +2731,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TexturePackerSetup"
-        "ProductCode" = "8:{68F77B37-29B0-4AA2-9934-54F116136EF5}"
-        "PackageCode" = "8:{AD9D14EA-44DB-4535-9E77-CA0631356E03}"
+        "ProductCode" = "8:{60EC7AEA-818C-47B8-B226-63B637A96195}"
+        "PackageCode" = "8:{88CF9C59-F3FE-40F0-B126-22AABF55CD64}"
         "UpgradeCode" = "8:{D846F007-86C6-4851-A29E-3B1ADD485991}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.3"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:Shade Soft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
