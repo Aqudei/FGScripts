@@ -9,9 +9,9 @@ import time
 
 TEST_RUNNING = True
 
-FPS = 16
-WIDTH = 1200
-HEIGHT = 1322
+# FPS = 31 not in use
+WIDTH = 817
+HEIGHT = 900
 
 # Regex pattern to match folder names of Models, ex. 22-001_Witch
 model_id_regex = re.compile(r'^\d\d\-\d\d\d_.+')
@@ -93,8 +93,11 @@ def clean_up(model_folder):
 
 def my_render_frames(path, frame_files, opts, dummy=False):
 
-    zero_rerun = False
-    for current_frame_number in range(16):
+    animationInfo = lux.getAnimationInfo()
+    frames = animationInfo['frames']
+
+    zero_reran = False
+    for current_frame_number in range(frames+1):
 
         lux.setAnimationFrame(current_frame_number)
 
@@ -105,7 +108,7 @@ def my_render_frames(path, frame_files, opts, dummy=False):
             opts=opts
         )
 
-        if not zero_rerun and current_frame_number == 0:
+        if not zero_reran and current_frame_number == 0:
             lux.setAnimationFrame(current_frame_number)
 
             lux.renderImage(
@@ -115,7 +118,7 @@ def my_render_frames(path, frame_files, opts, dummy=False):
                 opts=opts
             )
 
-            zero_rerun = True
+            zero_reran = True
 
         if dummy:
             break
@@ -176,7 +179,7 @@ def main():
 
     var_env_image_gloss = winpath(os.path.join(
         app_folder, 'KeyShot_Lightscape_Gloss.hdz'))
-    
+
     ensure_file_exist(var_env_image)
 
     ensure_file_exist(var_env_image_gloss)
@@ -222,7 +225,6 @@ def main():
             final.setMaterial('Hard Rough Plastic Black')
             setEnvironmentImage(var_env_image_gloss)
 
- 
             my_render_frames(var_clay_render_location,
                              'Gloss1.%d.png', opts, dummy=True)
             my_render_frames(var_clay_render_location, 'Gloss1.%d.png', opts)
@@ -230,8 +232,6 @@ def main():
             final.setMaterial('Hard Shiny Plastic Black')
             setEnvironmentImage(var_env_image_gloss)
             lux.setBackgroundColor(color=(0, 0, 0))
-
-
 
             my_render_frames(var_clay_render_location,
                              'Gloss2.%d.png', opts, dummy=True)
@@ -251,7 +251,7 @@ def main():
                     lux.setLightingPreset('Performance Mode')
 
                     frameFiles = input_fname_only
-                  
+
                     my_render_frames(var_mask_render_location,
                                      '{}.%d.png'.format(frameFiles), opts, dummy=True)
 
@@ -273,6 +273,7 @@ def main():
         except:
             print('Something went wrong while processesing model {}. Moving on to next model'.format(
                 model_name))
+
 
 try:
     main()
