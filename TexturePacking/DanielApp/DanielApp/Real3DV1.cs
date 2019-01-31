@@ -11,5 +11,10 @@ namespace DanielApp
         public string Model { get; set; }
         public int IsReady { get; set; }
         public string FrameSetup { get; set; }
+
+        public int? Data8Hd { get; set; }
+        public int? DataHd { get; set; }
+        public int? Data8Sd { get; set; }
+        public int? DataSd { get; set; }
     }
 }

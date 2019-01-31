@@ -20,6 +20,7 @@ namespace DanielApp
     {
         private readonly Regex _regex = new Regex(@"(\d\d\-\d\d\d_.+)[\\/]?");
         private List<Real3DV1> _real3DConfig;
+        private string _csvLocation;
 
         public MainForm()
         {
@@ -259,12 +260,12 @@ namespace DanielApp
             if (e.Result != null) //something went wrong
             {
                 progressBar1.Visible = true;
-                Debug.WriteLine("Processing done...");
+                Debug.WriteLine("Not running LigGdx/SpriteKit.");
+                Debug.WriteLine("Processing done.");
                 return;
             }
 
             backgroundWorkerRunTexturePacker.RunWorkerAsync();
-
         }
 
 
@@ -290,25 +291,19 @@ namespace DanielApp
         private void backgroundWorkerRunTexturePacker_DoWork(object sender, DoWorkEventArgs e)
         {
             var tpExecutable = Properties.Settings.Default.TP_EXECUTABLE_PATH;
+
             if (File.Exists(tpExecutable) == false)
             {
-                Debug.WriteLine("No tp executable file found!");
-                BeginInvoke(new Action(() =>
-                {
-                    MessageBox.Show(this, "No tp executable file found!", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }));
-
+                Debug.WriteLine("No TexturePacker executable file found!");
                 return;
             }
-            Debug.WriteLine("TP Executable Found!");
+
+            Debug.WriteLine("TexturePacker Executable Found!");
 
             var libgdxTps = Properties.Settings.Default.LIBGDX_TPS_FILE;
             if (File.Exists(libgdxTps) == false)
             {
-                Debug.WriteLine("No libgdx tps file found!");
-                MessageBox.Show(this, "No libgdx tps file found!", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine(@"Error: No libgdx TPS file found!");
                 return;
             }
             Debug.WriteLine("Libgdx settings file Found!");
@@ -316,16 +311,14 @@ namespace DanielApp
             var spritekittps = Properties.Settings.Default.SPRITEKIT_TPS_FILE;
             if (File.Exists(spritekittps) == false)
             {
-                Debug.WriteLine("No sprite-kit tps file found!");
-                MessageBox.Show(this, "No sprite-kit tps file found!", "Error",
-                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine("Error: No sprite-kit tps file found!");
                 return;
             }
 
             var rgxModel = new Regex(@"(.*)_Model");
             foreach (string inputFolder in listBoxFolders.Items)
             {
-                Debug.WriteLine("Processing " + inputFolder);
+                Debug.WriteLine("Packing " + inputFolder);
 
                 var dirs = Directory.GetDirectories(inputFolder, "*_Model*", SearchOption.TopDirectoryOnly);
                 if (dirs.Length <= 0)
@@ -334,8 +327,8 @@ namespace DanielApp
                 if (rslt.Success == false)
                 {
                     Debug.WriteLine("Model name cannot be inferred from " + inputFolder);
-                    MessageBox.Show(this, "Model name cannot be inferred from " + inputFolder,
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, @"Model name cannot be inferred from " + inputFolder,
+                        @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     continue;
                 }
 
@@ -471,6 +464,19 @@ namespace DanielApp
             Debug.WriteLine($"LibGDX Packing: {hdFrame1}");
             p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{hdFrame1}\" \"{tpsFile}\"");
             p.WaitForExit();
+
+            if (!string.IsNullOrWhiteSpace(_csvLocation))
+            {
+                try
+                {
+                    CountPngs(_csvLocation, inputFolder);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                    Debug.WriteLine("Something went wrong while counting number of PNGs");
+                }
+            }
         }
 
         private string GetModelName(string fromFolder)
@@ -483,6 +489,81 @@ namespace DanielApp
             }
 
             return null;
+        }
+
+        private void CountPngs(string csvLocation, string modelFolder)
+        {
+            var modelName = GetModelName(modelFolder);
+
+            Debug.WriteLine("Counting Pngs...");
+
+            var libgdxFolderHd = Path.Combine(modelFolder, "V5", "Output", "HD", "libgdx");
+            var libgdxFolderSd = Path.Combine(modelFolder, "V5", "Output", "SD", "libgdx");
+
+            var data8Hd = Directory.GetFiles(libgdxFolderHd, "*Pack0*.png").Length;
+            Debug.WriteLine($"data8Hd: {data8Hd}");
+
+            var dataHd = Directory.GetFiles(libgdxFolderHd, "*Pack1*.png").Length;
+            Debug.WriteLine($"data8Hd: {dataHd}");
+
+            var data8Sd = Directory.GetFiles(libgdxFolderSd, "*Pack0*.png").Length;
+            Debug.WriteLine($"data8Hd: {data8Sd}");
+
+            var dataSd = Directory.GetFiles(libgdxFolderSd, "*Pack1*.png").Length;
+            Debug.WriteLine($"data8Hd: {dataSd}");
+
+            var outputCsv = Path.Combine(Path.GetDirectoryName(csvLocation),
+                Path.GetFileNameWithoutExtension(csvLocation) + "_edited.csv");
+
+
+            Debug.WriteLine("Writing to Real3d_V1.csv . . .");
+            var items = new List<List<string>>();
+            var headers = new List<string>();
+
+
+            using (var fileStream = new FileStream(csvLocation, FileMode.Open))
+            {
+                var csvReader = Csv.CsvReader.ReadFromStream(fileStream);
+
+                var rowCounter = 0;
+                var data8HdIndex = -1;
+                var dataHdIndex = -1;
+                var data8SdIndex = -1;
+                var dataSdIndex = -1;
+
+                foreach (var csvLine in csvReader)
+                {
+                    if (rowCounter == 0)
+                    {
+                        data8HdIndex = Array.IndexOf(csvLine.Headers, "data8HD");
+                        dataHdIndex = Array.IndexOf(csvLine.Headers, "dataHD");
+                        data8SdIndex = Array.IndexOf(csvLine.Headers, "data8SD");
+                        dataSdIndex = Array.IndexOf(csvLine.Headers, "dataSD");
+
+                        headers.AddRange(csvLine.Headers.ToList());
+                        rowCounter++;
+                        continue;
+                    }
+
+                    if (csvLine[0] == modelName)
+                    {
+                        csvLine.Values[data8HdIndex] = data8Hd.ToString();
+                        csvLine.Values[dataHdIndex] = dataHd.ToString();
+                        csvLine.Values[data8SdIndex] = data8Sd.ToString();
+                        csvLine.Values[dataSdIndex] = dataSd.ToString();
+                    }
+
+                    items.Add(csvLine.Values.ToList());
+
+                    rowCounter++;
+                }
+            }
+
+            using (var streamWriter = new StreamWriter(csvLocation))
+            {
+                Csv.CsvWriter.Write(streamWriter, headers.ToArray(), items.Select(i => i.ToArray()));
+                Debug.WriteLine("Done writing to Real3d_V1.csv");
+            }
         }
 
         private void RunDepot()
@@ -574,67 +655,70 @@ namespace DanielApp
         {
             Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
 
+            Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
+                                     .WithParsed(options =>
+                                     {
+                                         if (string.IsNullOrWhiteSpace(options.StartDirectory))
+                                         {
+                                             Debug.WriteLine("No arguments found. I'm not running in Auto Mode");
+                                             return;
+                                         }
 
-            Task.Run(() =>
-            {
+                                         if (!Directory.Exists(options.StartDirectory))
+                                         {
+                                             Debug.WriteLine($"The folder {options.StartDirectory} does not exist. Please check start directory in your MacroScript.");
+                                             return;
+                                         }
 
-                try
-                {
-                    Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
-                                      .WithParsed(options =>
-                                      {
-                                          _real3DConfig = new List<Real3DV1>();
+                                         _csvLocation = Path.Combine(options.StartDirectory, "Real3d_V1.csv");
 
-                                          if (string.IsNullOrWhiteSpace(options.StartDirectory))
-                                          {
-                                              throw new Exception("Start directory cannot be empty. Please check start directory in your Macroscript.");
-                                          }
+                                         Task.Run(() =>
+                                         {
+                                             try
+                                             {
+                                                 _real3DConfig = new List<Real3DV1>();
 
-                                          if (!Directory.Exists(options.StartDirectory))
-                                          {
-                                              throw new Exception($"The folder {options.StartDirectory} does not exist. Please check start directory in your Macroscript.");
-                                          }
+                                                 using (var streamReader = new StreamReader(Path.Combine(options.StartDirectory, "Real3d_V1.csv")))
+                                                 using (var csv = new CsvReader(streamReader))
+                                                 {
+                                                     csv.Configuration.PrepareHeaderForMatch = (s, i) => s.Replace(" ", "").ToLower().Trim();
+                                                     var config = csv.GetRecords<Real3DV1>().ToList();
+                                                     _real3DConfig.AddRange(config.Where(dv1 => dv1.IsReady == 1));
+                                                 }
 
-                                          using (var streamReader = new StreamReader(Path.Combine(options.StartDirectory, "Real3d_V1.csv")))
-                                          using (var csv = new CsvReader(streamReader))
-                                          {
-                                              csv.Configuration.PrepareHeaderForMatch = (s, i) => s.Replace(" ", "").ToLower().Trim();
-                                              var config = csv.GetRecords<Real3DV1>().ToList();
-                                              _real3DConfig.AddRange(config.Where(dv1 => dv1.IsReady == 1));
-                                          }
+                                                 if (!_real3DConfig.Any())
+                                                 {
+                                                     throw new Exception("Unable to obtain model names from 'Read3d_V1.csv' file");
+                                                 }
 
-                                          if (!_real3DConfig.Any())
-                                          {
-                                              throw new Exception("Unable to obtain model names from 'Read3d_V1.csv' file");
-                                          }
+                                                 var dirs = Directory.GetDirectories(options.StartDirectory);
+                                                 foreach (var dir in dirs)
+                                                 {
+                                                     var modelName = ParseModelName(dir);
 
-                                          var dirs = Directory.GetDirectories(options.StartDirectory);
-                                          foreach (var dir in dirs)
-                                          {
-                                              var modelName = ParseModelName(dir);
+                                                     if (_real3DConfig.All(dv1 => dv1.Model.Trim() != modelName.Trim()))
+                                                         continue;
 
-                                              if (_real3DConfig.All(dv1 => dv1.Model.Trim() != modelName.Trim()))
-                                                  continue;
+                                                     if (!string.IsNullOrWhiteSpace(modelName))
+                                                         listBoxFolders.BeginInvoke(new Action(() =>
+                                                         {
+                                                             listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName));
+                                                         }));
+                                                 }
 
-                                              if (!string.IsNullOrWhiteSpace(modelName))
-                                                  listBoxFolders.BeginInvoke(new Action(() =>
-                                                  {
-                                                      listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName));
-                                                  }));
-                                          }
+                                                 buttonRunPacker.BeginInvoke(new Action(() =>
+                                                 {
+                                                     buttonRunPacker.PerformClick();
+                                                 }));
+                                             }
+                                             catch (Exception exception)
+                                             {
+                                                 Debug.WriteLine("Error: " + exception.Message);
+                                                 //Debug.WriteLine(exception.StackTrace);
+                                             }
+                                         });
+                                     });
 
-                                          buttonRunPacker.BeginInvoke(new Action(() =>
-                                          {
-                                              buttonRunPacker.PerformClick();
-                                          }));
-                                      });
-                }
-                catch (Exception exception)
-                {
-                    Debug.WriteLine("Error: " + exception.Message);
-                    //Debug.WriteLine(exception.StackTrace);
-                }
-            });
 
         }
 
