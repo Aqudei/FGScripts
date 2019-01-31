@@ -586,7 +586,8 @@ namespace DanielApp
                         if (Directory.Exists(outputFolder))
                         {
                             Debug.WriteLine($"[Depot] Copying files from {outputFolder} to {depotPath}\n");
-                            process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /MIR");
+                            //process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /MIR");
+                            process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /E");
                             process.WaitForExit();
                             process.Close();
                         }
@@ -613,7 +614,8 @@ namespace DanielApp
                             {
                                 Directory.CreateDirectory(Path.Combine(depotPath, modelName));
                                 Debug.WriteLine($"[Depot] Copying icon files from {iconFolder} to {depotPath}\n");
-                                process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /MIR");
+                                // process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /MIR");
+                                process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /E");
                                 process.WaitForExit();
                                 process.Close();
                             }
@@ -627,6 +629,7 @@ namespace DanielApp
             progressBar1.Visible = false;
             if (e.Result == null)
             {
+             
                 RunDepot();
                 Debug.WriteLine("Processing done...");
                 return;
@@ -654,6 +657,7 @@ namespace DanielApp
         private void MainForm_Load(object sender, EventArgs e)
         {
             Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
+
 
             Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
                                      .WithParsed(options =>
@@ -705,6 +709,12 @@ namespace DanielApp
                                                              listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName));
                                                          }));
                                                  }
+
+
+                                                 //button2.BeginInvoke(new Action(() =>
+                                                 //{
+                                                 //    button2.PerformClick();
+                                                 //}));
 
                                                  buttonRunPacker.BeginInvoke(new Action(() =>
                                                  {

@@ -406,12 +406,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1EC7339E4521D990B61C84A747CB95BB"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D290334358B8CEAFE6DDF456BF8C4753"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -431,6 +425,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6524C669030C45951E3E93D2269121FD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_1EC7339E4521D990B61C84A747CB95BB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2731,15 +2731,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TexturePackerSetup"
-        "ProductCode" = "8:{60EC7AEA-818C-47B8-B226-63B637A96195}"
-        "PackageCode" = "8:{88CF9C59-F3FE-40F0-B126-22AABF55CD64}"
+        "ProductCode" = "8:{021FC115-23BE-4252-BF4D-8F7C9918A4EA}"
+        "PackageCode" = "8:{DF98CF60-D689-4EE2-BC78-FDDCC5CD506A}"
         "UpgradeCode" = "8:{D846F007-86C6-4851-A29E-3B1ADD485991}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.4"
+        "ProductVersion" = "8:1.0.5"
         "Manufacturer" = "8:Shade Soft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
