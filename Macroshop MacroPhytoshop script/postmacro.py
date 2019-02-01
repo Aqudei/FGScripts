@@ -77,14 +77,13 @@ class PostMacro(object):
                         row[header.index('#ofTabs')] = 1
                         row[header.index('Tab2 Image')] = ''
 
-                        eye_gloss_index = self.__get_indexes(
-                            header, 'Part Gloss Image')[0]
-                        
-                        if eyegloss_prefix:
-                            row[eye_gloss_index] = '{}EyesGLOSS_Clay1.'.format(eyegloss_prefix)
-                        else:
-                            row[eye_gloss_index] = 'EyesGLOSS_Clay1.'
-                            
+                        for eye_gloss_index in self.__get_indexes(header, 'Part Gloss Image'):
+
+                            if eyegloss_prefix:
+                                row[eye_gloss_index] = '{}EyesGLOSS_Clay1.'.format(eyegloss_prefix)
+                            else:
+                                row[eye_gloss_index] = 'EyesGLOSS_Clay1.'
+
                     else:
                         row[header.index('#ofTabs')] = 2
 

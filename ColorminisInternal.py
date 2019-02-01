@@ -9,10 +9,10 @@ import time
 
 TEST_RUNNING = True
 
-FPS = 31
+FPS = 15
 
-WIDTH = 817
-HEIGHT = 900
+WIDTH = 200
+HEIGHT = 300
 
 # Regex pattern to match folder names of Models, ex. 22-001_Witch
 model_id_regex = re.compile(r'^\d\d\-\d\d\d_.+')
@@ -75,7 +75,7 @@ def ensure_folder(folder, with_file=False):
         else:
             os.makedirs(folder)
     except Exception as e:
-        print(e)
+        print('Folder {} already exists.'.format(folder))
 
 
 def clean_up(model_folder):
