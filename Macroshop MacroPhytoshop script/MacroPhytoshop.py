@@ -2559,7 +2559,8 @@ class MacroPhytoshop(tk.Frame):
         self.model_name_entry.set(rslt.group(0))
 
     def __gen_keyshot_mat(self):
-        mat_gen = MatGenerator(root=self.directory_entry.get())
+
+        mat_gen = MatGenerator(root=self.directory_entry.get(), parent = self)
         mat_gen.start()
 
     def __run_texturepacker(self):
