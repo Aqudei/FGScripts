@@ -131,7 +131,7 @@ def my_render_frames(path, frame_files, opts, dummy=False):
         lux.setAnimationFrame(0)
 
         lux.renderImage(
-            path=os.path.join(path, frame_files % (0,)),
+            path=os.path.join(path, frame_files % ('dummy',)),
             width=WIDTH,
             height=HEIGHT,
             opts=opts

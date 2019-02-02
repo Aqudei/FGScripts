@@ -2427,6 +2427,27 @@ class MacroPhytoshop(tk.Frame):
         rslt = rgx.search(folder)
         return rslt != None
 
+
+    def __read_config2(self):
+        newconfig = dict()
+
+        CONFIG_CSV = os.path.join(self.directory_entry.get(), 'Real3d_V1.csv')
+        if not os.path.exists(CONFIG_CSV):
+            print('Real3d_V1.csv was not found')
+            raise FileNotFoundError()
+
+        with open(CONFIG_CSV, 'rt', newline='') as fp:
+            reader = csv.DictReader(fp)
+
+            for item in reader:
+                if not 'isReady' in item or not 'frameSetup' in item:
+                    raise ValueError("'isReady' and 'frameSetup' columns must be found in Read3d_V1.csv")        
+                
+                print('config values for {} loaded'.format(item[0]))
+                newconfig[item['model']] = item
+
+            return newconfig
+    # wated refactor to read redies
     def __read_config(self):
         CONFIG_CSV = os.path.join(self.directory_entry.get(), 'Real3d_V1.csv')
         if not os.path.exists(CONFIG_CSV):
@@ -2491,9 +2512,9 @@ class MacroPhytoshop(tk.Frame):
         self.one_click = True
         self.original_root = self.directory_entry.get()
 
-        
         try:
             processing, skipping = self.__get_ready_models()
+            self.my_config = self.__read_config2()
 
             print('Processing the following models:')
             print('\n'.join(processing))
