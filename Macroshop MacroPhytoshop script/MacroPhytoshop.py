@@ -1450,7 +1450,15 @@ class MacroPhytoshop(tk.Frame):
                 items.append(None)
                 items.append(prefix)
                 items.append(prefix)
-                items.append(8)
+                #import pdb; pdb.set_trace()
+                if self.get_model_name() in self.my_config:
+                    frameSetup = self.my_config[self.get_model_name()]['frameSetup']
+                    tmenu_frame = int(frameSetup.split(",")[2])
+                    items.append(tmenu_frame)
+                else:
+                    print('Warning: TMenu frame number was not found in Real3D_V1.csv for model {}'.format(self.get_model_name()))
+                    print('Using frame # 8. Maybe this will throw error.')
+                    items.append(8)
 
             i = 0
             for item in items:
@@ -2437,13 +2445,13 @@ class MacroPhytoshop(tk.Frame):
             raise FileNotFoundError()
 
         with open(CONFIG_CSV, 'rt', newline='') as fp:
-            reader = csv.DictReader(fp)
+            reader = csv.DictReader(fp.readlines())
 
             for item in reader:
                 if not 'isReady' in item or not 'frameSetup' in item:
                     raise ValueError("'isReady' and 'frameSetup' columns must be found in Read3d_V1.csv")        
                 
-                print('config values for {} loaded'.format(item[0]))
+                print('config values for {} loaded'.format(item['model']))
                 newconfig[item['model']] = item
 
             return newconfig
