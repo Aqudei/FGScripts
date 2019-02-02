@@ -79,9 +79,12 @@ class PostMacro(object):
 
                         eye_gloss_indexes = self.__get_indexes(header, 'Part Gloss Image')[0:2]
 
-                        for eye_gloss_index in eye_gloss_indexes:
+                        for eyegloss_idx, eye_gloss_index in enumerate(eye_gloss_indexes):
                             if eyegloss_prefix:
-                                row[eye_gloss_index] = '{}EyesGLOSS_Clay1.'.format(eyegloss_prefix)
+                                if eyegloss_idx==0:
+                                    row[eye_gloss_index] = '{}EyesGLOSS_Clay1.'.format(eyegloss_prefix)
+                                if eyegloss_idx==1:
+                                    row[eye_gloss_index] = '{}EyesGLOSS_Gloss2.'.format(eyegloss_prefix)
                             else:
                                 row[eye_gloss_index] = 'EyesGLOSS_Clay1.'
 
