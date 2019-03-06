@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using CommandLine;
 using CsvHelper;
+using Newtonsoft.Json;
 
 namespace DanielApp
 {
@@ -89,14 +90,14 @@ namespace DanielApp
                 CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "SD", "SpriteKit"));
             }
 
-            if (Properties.Settings.Default.PACK_IOS)
-            {
-                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS"));
-                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "libgdx"));
-                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "SpriteKit"));
-                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "libgdx"));
-                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "SpriteKit"));
-            }
+            //if (Properties.Settings.Default.PACK_IOS)
+            //{
+            //    CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS"));
+            //    CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "libgdx"));
+            //    CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "SpriteKit"));
+            //    CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "libgdx"));
+            //    CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "SpriteKit"));
+            //}
         }
 
         private void CopySongsCSVPartsFeature(string folder)
@@ -366,11 +367,11 @@ namespace DanielApp
                     SpriteKit(tpExecutable, spritekittps, inputFolder, modelName);
                 }
 
-                if (Properties.Settings.Default.PACK_IOS)
-                {
-                    LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
-                    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
-                }
+                //if (Properties.Settings.Default.PACK_IOS)
+                //{
+                //    LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
+                //    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
+                //}
             }
         }
 
@@ -699,8 +700,9 @@ namespace DanielApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
+            Text = @"Last Build on March 6, 2019 4:07 PM (PH)";
 
+            Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
 
             Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())
                                      .WithParsed(options =>
@@ -804,12 +806,16 @@ namespace DanielApp
 
             var modelName = ParseModelName(modelFolder);
 
-
             var packSourceSD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "SD");
             Debug.WriteLine($"Reading SD images from {packSourceSD}");
 
             var packSourceHD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "HD");
             Debug.WriteLine($"Reading HD images from {packSourceHD}");
+
+            if (!Directory.Exists(packSourceSD) || !Directory.Exists(packSourceHD))
+            {
+                throw new Exception("Please run packer for android first before running packer for IOS");
+            }
 
             var packSourceIosSD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model-SD");
             Debug.WriteLine($"Writing IOS packed SD texture to {packSourceIosSD}.");
@@ -835,8 +841,8 @@ namespace DanielApp
                 Debug.WriteLine($"Processing {file}...");
                 File.Copy(file,
                     rgx.IsMatch(Path.GetFileName(file))
-                        ? Path.Combine(packSourceIosHD, Path.GetFileName(file))
-                        : Path.Combine(packSourceIosUI_HD, Path.GetFileName(file)));
+                        ? Path.Combine(packSourceIosHD, $"{modelName.Item2}_HD_{Path.GetFileName(file)}")
+                        : Path.Combine(packSourceIosUI_HD, $"{modelName.Item2}_HD_{Path.GetFileName(file)}"));
             }
 
             // copy sd
@@ -846,8 +852,8 @@ namespace DanielApp
                 Debug.WriteLine($"Processing {file}...");
                 File.Copy(file,
                     rgx.IsMatch(Path.GetFileName(file))
-                        ? Path.Combine(packSourceIosSD, Path.GetFileName(file))
-                        : Path.Combine(packSourceIosUI_SD, Path.GetFileName(file)));
+                        ? Path.Combine(packSourceIosSD, $"{modelName.Item2}_SD_{Path.GetFileName(file)}")
+                        : Path.Combine(packSourceIosUI_SD, $"{modelName.Item2}_SD_{Path.GetFileName(file)}"));
             }
 
             //arrange hd
@@ -896,6 +902,23 @@ namespace DanielApp
                     File.Move(source, destination);
                 }
             }
+
+            // Json
+            var packSourceIos = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS");
+
+            var uiFolders = Directory.GetDirectories(packSourceIos, "*_UI*");
+            foreach (var uiFolder in uiFolders)
+            {
+                var isHd = uiFolder.ToLower().EndsWith("-hd");
+                var uiJson = new UiJson();
+                foreach (var file in Directory.GetFiles(uiFolder, "*.png"))
+                {
+                    uiJson.names.Add(Path.GetFileName(file));
+                }
+
+                File.WriteAllText(Path.Combine(uiFolder, "ui_items.json"),
+                    JsonConvert.SerializeObject(uiJson, Formatting.Indented));
+            }
         }
 
         private void LibGdxPackerIos(string tpExecutable, string tpsFile,
@@ -913,11 +936,11 @@ namespace DanielApp
                 var isHd = modelFolder.EndsWith("-HD");
 
                 var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", isHd ? "HD" : "SD", "libgdx");
-                
+
                 foreach (var altasInputFolder in Directory.GetDirectories(modelFolder))
                 {
                     Debug.WriteLine($"Processing Ios LibGdx {altasInputFolder}");
-                    RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack-{n}.png"}\" --data \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack.atlas"}\" \"{altasInputFolder}\" \"{tpsFile}\"");
+                    RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputAtlasFolder + "/" + seriesNumber + $"_{(isHd ? "HD" : "SD")}" + "_" + Path.GetFileName(altasInputFolder) + "{n}.png"}\" --data \"{outputAtlasFolder + "/" + seriesNumber + $"_{(isHd ? "HD" : "SD")}" + "_" + Path.GetFileName(altasInputFolder) + ".atlas"}\" \"{altasInputFolder}\" \"{tpsFile}\"");
                 }
             }
         }
@@ -957,7 +980,7 @@ namespace DanielApp
                     var isHd = modelFolder.EndsWith("-HD");
                     var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", $"{(isHd ? "HD" : "SD")}", "SpriteKit");
                     RunProcess($"\"{tpExecutable}\"",
-                        $"--data \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(partFolder) + $"_{(isHd ? "HD" : "SD")}_Pack.atlasc"}\" \"{partFolder}\" \"{tps}\"");
+                        $"--data \"{outputAtlasFolder + "/" + seriesNumber + $"_{(isHd ? "HD" : "SD")}" + "_" + Path.GetFileName(partFolder) + ".atlasc"}\" \"{partFolder}\" \"{tps}\"");
                 }
             }
         }
