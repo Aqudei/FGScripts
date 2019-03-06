@@ -82,6 +82,7 @@ namespace DanielApp
         {
             if (Properties.Settings.Default.PACK_ANDROID)
             {
+                CreateCleanDirectory(Path.Combine(folder, "V5", "Output"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "HD", "libgdx"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "HD", "SpriteKit"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "SD", "libgdx"));
@@ -90,6 +91,7 @@ namespace DanielApp
 
             if (Properties.Settings.Default.PACK_IOS)
             {
+                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "libgdx"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "SpriteKit"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "libgdx"));
@@ -813,7 +815,6 @@ namespace DanielApp
 
             var modelName = ParseModelName(modelFolder);
 
-
             
             var packSourceSD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "SD");
             Debug.WriteLine($"Reading SD images from {packSourceSD}");
@@ -821,10 +822,10 @@ namespace DanielApp
             var packSourceHD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "HD");
             Debug.WriteLine($"Reading HD images from {packSourceHD}");
 
-            var packSourceIosSD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -SD");
+            var packSourceIosSD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model-SD");
             Debug.WriteLine($"Writing IOS packed SD texture to {packSourceIosSD}.");
 
-            var packSourceIosHD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -HD");
+            var packSourceIosHD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model-HD");
             Debug.WriteLine($"Writing IOS packed HD texture to {packSourceIosHD}.");
 
             var packSourceIosUI_SD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_UI-SD");
