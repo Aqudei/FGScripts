@@ -44,6 +44,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxDepotPath = new System.Windows.Forms.TextBox();
             this.checkBoxDoDepot = new System.Windows.Forms.CheckBox();
+            this.checkBoxPackAndroid = new System.Windows.Forms.CheckBox();
+            this.checkBoxPackIOS = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -189,11 +191,33 @@
             this.checkBoxDoDepot.UseVisualStyleBackColor = true;
             this.checkBoxDoDepot.CheckedChanged += new System.EventHandler(this.checkBoxDoDepot_CheckedChanged);
             // 
+            // checkBoxPackAndroid
+            // 
+            this.checkBoxPackAndroid.AutoSize = true;
+            this.checkBoxPackAndroid.Location = new System.Drawing.Point(15, 243);
+            this.checkBoxPackAndroid.Name = "checkBoxPackAndroid";
+            this.checkBoxPackAndroid.Size = new System.Drawing.Size(90, 17);
+            this.checkBoxPackAndroid.TabIndex = 17;
+            this.checkBoxPackAndroid.Text = "Pack Android";
+            this.checkBoxPackAndroid.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxPackIOS
+            // 
+            this.checkBoxPackIOS.AutoSize = true;
+            this.checkBoxPackIOS.Location = new System.Drawing.Point(132, 243);
+            this.checkBoxPackIOS.Name = "checkBoxPackIOS";
+            this.checkBoxPackIOS.Size = new System.Drawing.Size(72, 17);
+            this.checkBoxPackIOS.TabIndex = 16;
+            this.checkBoxPackIOS.Text = "Pack IOS";
+            this.checkBoxPackIOS.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 247);
+            this.ClientSize = new System.Drawing.Size(584, 272);
+            this.Controls.Add(this.checkBoxPackAndroid);
+            this.Controls.Add(this.checkBoxPackIOS);
             this.Controls.Add(this.checkBoxDoDepot);
             this.Controls.Add(this.buttonDepot);
             this.Controls.Add(this.label2);
@@ -235,5 +259,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxDepotPath;
         private System.Windows.Forms.CheckBox checkBoxDoDepot;
+        private System.Windows.Forms.CheckBox checkBoxPackAndroid;
+        private System.Windows.Forms.CheckBox checkBoxPackIOS;
     }
 }

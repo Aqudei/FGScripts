@@ -66,9 +66,11 @@ namespace DanielApp
             Properties.Settings.Default.TP_EXECUTABLE_PATH = labelExecutablePath.Text;
             Properties.Settings.Default.LIBGDX_TPS_FILE = textBoxLibGdxTps.Text;
             Properties.Settings.Default.SPRITEKIT_TPS_FILE = textBoxSpriteKitTps.Text;
+            Properties.Settings.Default.PACK_ANDROID = checkBoxPackAndroid.Checked;
+            Properties.Settings.Default.PACK_IOS = checkBoxPackIOS.Checked;
 
             Properties.Settings.Default.Save();
-            MessageBox.Show(this, "Settings successfully saved!", "Success",
+            MessageBox.Show(this, @"Settings successfully saved!", @"Success",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -93,6 +95,9 @@ namespace DanielApp
 
             textBoxDepotPath.Text = Properties.Settings.Default.DEPOT_PATH;
             checkBoxDoDepot.Checked = Properties.Settings.Default.DO_DEPOT;
+
+            checkBoxPackIOS.Checked = Properties.Settings.Default.PACK_IOS;
+            checkBoxPackAndroid.Checked = Properties.Settings.Default.PACK_ANDROID;
         }
 
         private void buttonDepot_Click(object sender, EventArgs e)

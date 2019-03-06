@@ -1,3 +1,15 @@
+import subprocess
+from ColorminisExternal import MatGenerator
+from postmacro import PostMacro
+from exclude_parts_dialog import ExcludePartsDialog
+from alpha_tweak import AlphaTweak
+from phytoshop_gui_settings import *
+from generate_part_csv_inputs import GeneratePartCSVInputs
+from shadow_resize_summary import ShadowResizeSummary
+from resize_summary import ResizeSummary
+from shadow_crop_analysis_results import ShadowCropAnalysisResults
+from crop_analysis_results import CropAnalysisResults
+from sequence import Sequence
 import csv
 import traceback
 from zipfile import ZipFile
@@ -17,18 +29,7 @@ import glob
 import math
 includepath = os.path.abspath(os.path.dirname(sys.argv[0]))
 sys.path.append(includepath)
-from sequence import Sequence
-from crop_analysis_results import CropAnalysisResults
-from shadow_crop_analysis_results import ShadowCropAnalysisResults
-from resize_summary import ResizeSummary
-from shadow_resize_summary import ShadowResizeSummary
-from generate_part_csv_inputs import GeneratePartCSVInputs
-from phytoshop_gui_settings import *
-from alpha_tweak import AlphaTweak
-from exclude_parts_dialog import ExcludePartsDialog
-from postmacro import PostMacro
-from ColorminisExternal import MatGenerator
-import subprocess
+
 
 class MacroPhytoshop(tk.Frame):
     def __init__(self, master=None):
@@ -686,15 +687,15 @@ class MacroPhytoshop(tk.Frame):
 
         self.var_run_rgb_rest = tk.IntVar()
         self.var_run_rgb_rest.set(1)
-        
+
         # Row 6, checkbox "run rgb reset"
-        tk.Checkbutton(self.parent, font=self.custom_font, bg = 'orange',
-                  text="Include RGB reset in One Click",
-                  variable=self.var_run_rgb_rest).grid(row=row,
-                                                   column=2,
-                                                   columnspan=2,
-                                                   padx=self.get_padding(),
-                                                   pady=self.get_padding())
+        tk.Checkbutton(self.parent, font=self.custom_font, bg='orange',
+                       text="Include RGB reset in One Click",
+                       variable=self.var_run_rgb_rest).grid(row=row,
+                                                            column=2,
+                                                            columnspan=2,
+                                                            padx=self.get_padding(),
+                                                            pady=self.get_padding())
 
         # Row 6, button "run rgb reset"
         tk.Button(self.parent, font=self.custom_font,
@@ -704,14 +705,14 @@ class MacroPhytoshop(tk.Frame):
                                                    columnspan=4,
                                                    padx=self.get_padding(),
                                                    pady=self.get_padding())
-                                                
+
         tk.Button(self.parent, font=self.custom_font, bg='orange',
                   text="Run Texture Packer",
                   command=self.__run_texturepacker).grid(row=row,
-                                                   column=8,
-                                                   columnspan=2,
-                                                   padx=self.get_padding(),
-                                                   pady=self.get_padding())
+                                                         column=8,
+                                                         columnspan=2,
+                                                         padx=self.get_padding(),
+                                                         pady=self.get_padding())
 
         self.script11_message = tk.Label(self.parent,
                                          font=self.custom_font2, text="")
@@ -1452,11 +1453,13 @@ class MacroPhytoshop(tk.Frame):
                 items.append(prefix)
                 #import pdb; pdb.set_trace()
                 if self.get_model_name() in self.my_config:
-                    frameSetup = self.my_config[self.get_model_name()]['frameSetup']
+                    frameSetup = self.my_config[self.get_model_name(
+                    )]['frameSetup']
                     tmenu_frame = int(frameSetup.split(",")[2])
                     items.append(tmenu_frame)
                 else:
-                    print('Warning: TMenu frame number was not found in Real3D_V1.csv for model {}'.format(self.get_model_name()))
+                    print('Warning: TMenu frame number was not found in Real3D_V1.csv for model {}'.format(
+                        self.get_model_name()))
                     print('Using frame # 8. Maybe this will throw error.')
                     items.append(8)
 
@@ -2244,18 +2247,19 @@ class MacroPhytoshop(tk.Frame):
                     eyes_gloss = entry
 
                 if self.__is_pat(base):
-                    pats.append((base,entry))
+                    pats.append((base, entry))
 
-            if eyes!=None and eyes_gloss!=None:
+            if eyes != None and eyes_gloss != None:
                 largest = self.__get_largest(eyes.get(), eyes_gloss.get())
                 eyes_gloss.set(largest)
                 eyes.set(largest)
-            
+
             if len(pats) > 0:
-                largest_pat = self.__get_largest_pat([v.get() for k,v in pats])
+                largest_pat = self.__get_largest_pat(
+                    [v.get() for k, v in pats])
                 for pat_base, pat_entry in pats:
                     pat_entry.set(largest_pat)
-                
+
             dialog.quit()
 
     def __is_pat(self, patname):
@@ -2286,29 +2290,30 @@ class MacroPhytoshop(tk.Frame):
             messagebox.showerror("Invalid eyes crop bound",
                                  "Invalid crop bound {}".format(crop_bounds_str))
             return
-    
+
     def __get_largest_pat(self, pats):
         try:
             bounds = []
 
             for p in pats:
                 bounds.append([int(_p.strip()) for _p in p.split(',')])
-            
+
             print('Input pat array')
             arr = np.array(bounds)
             print(arr)
 
-            row_starts = arr[:,0]
-            col_starts = arr[:,1]
-            row_ends = arr[:,2]
-            col_ends = arr[:,3]
+            row_starts = arr[:, 0]
+            col_starts = arr[:, 1]
+            row_ends = arr[:, 2]
+            col_ends = arr[:, 3]
 
             row_start = row_starts[np.argsort(row_starts)[0]]
             col_start = col_starts[np.argsort(col_starts)[0]]
             row_end = row_ends[np.argsort(row_ends)[-1]]
             col_end = col_ends[np.argsort(col_ends)[-1]]
 
-            largest = "{},{},{},{}".format(row_start, col_start, row_end, col_end)
+            largest = "{},{},{},{}".format(
+                row_start, col_start, row_end, col_end)
             print('Largest pat bounds ' + largest)
             return largest
 
@@ -2316,10 +2321,9 @@ class MacroPhytoshop(tk.Frame):
             messagebox.showerror("Error in parsing pat values")
             return
 
-
     def __get_largest(self, crop_set1, crop_set2):
 
-        print('Finding largest bounds from {} and {}'.format(crop_set1,crop_set2))
+        print('Finding largest bounds from {} and {}'.format(crop_set1, crop_set2))
 
         crop_bounds1 = crop_set1.split(",")
         crop_bounds2 = crop_set2.split(",")
@@ -2335,18 +2339,19 @@ class MacroPhytoshop(tk.Frame):
             row_end2 = int(crop_bounds2[2])
             col_end2 = int(crop_bounds2[3])
 
-
             row_start = row_start1 if row_start1 < row_start2 else row_start2
             col_start = col_start1 if col_start1 < col_start2 else col_start2
             row_end = row_end1 if row_end1 > row_end2 else row_end2
             col_end = col_end1 if col_end1 > col_end2 else col_end2
-            
-            largest = "{},{},{},{}".format(row_start, col_start, row_end, col_end)
+
+            largest = "{},{},{},{}".format(
+                row_start, col_start, row_end, col_end)
             print('Largest ' + largest)
             return largest
 
         except:
-            messagebox.showerror("Cannot parse eyes crop bounds <{} and/or {}>".format(crop_set1,crop_set2))
+            messagebox.showerror(
+                "Cannot parse eyes crop bounds <{} and/or {}>".format(crop_set1, crop_set2))
             return
 
     def set_script1_message(self, text, color):
@@ -2430,11 +2435,10 @@ class MacroPhytoshop(tk.Frame):
         self.update_expand_directory_message()
         self.update()
 
-    def __is_model_folder(self,folder):
+    def __is_model_folder(self, folder):
         rgx = re.compile(r'\d+\-\d+_.+')
         rslt = rgx.search(folder)
         return rslt != None
-
 
     def __read_config2(self):
         newconfig = dict()
@@ -2449,13 +2453,15 @@ class MacroPhytoshop(tk.Frame):
 
             for item in reader:
                 if not 'isReady' in item or not 'frameSetup' in item:
-                    raise ValueError("'isReady' and 'frameSetup' columns must be found in Read3d_V1.csv")        
-                
+                    raise ValueError(
+                        "'isReady' and 'frameSetup' columns must be found in Read3d_V1.csv")
+
                 print('config values for {} loaded'.format(item['model']))
                 newconfig[item['model']] = item
 
             return newconfig
     # wated refactor to read redies
+
     def __read_config(self):
         CONFIG_CSV = os.path.join(self.directory_entry.get(), 'Real3d_V1.csv')
         if not os.path.exists(CONFIG_CSV):
@@ -2466,39 +2472,40 @@ class MacroPhytoshop(tk.Frame):
             reader = csv.reader(fp.readlines())
             readies = dict()
             for idx, row in enumerate(reader):
-                if idx==0:
+                if idx == 0:
                     if 'isReady' in row:
                         isRenderIndex = row.index('isReady')
                     else:
-                        raise Exception("'isReady was not found in csv config.")
+                        raise Exception(
+                            "'isReady was not found in csv config.")
                     continue
-                
+
                 try:
                     readies[row[0]] = int(row[isRenderIndex])
                 except:
-                    print('Cannot read correct isReady value of {}.\nCoercing to zero (0)'.format(row[0]))
+                    print(
+                        'Cannot read correct isReady value of {}.\nCoercing to zero (0)'.format(row[0]))
                     readies[row[0]] = 0
-                
-        
+
         return readies
-    
+
     def __get_model_name(self, folder):
         rgx = re.compile(r'\d+\-\d+_.+', re.I)
         rslt = rgx.search(folder)
         if rslt:
-           return rslt.group(0).strip()
+            return rslt.group(0).strip()
 
     def __get_ready_models(self):
         print('Fetching folders that are ready to process.')
         config = self.__read_config()
-        
+
         skipping = []
         processing = []
-        
+
         for item in os.listdir(self.directory_entry.get()):
             print('Checking {}'.format(item))
             model_name = self.__get_model_name(item)
-            
+
             if not model_name:
                 continue
 
@@ -2507,16 +2514,16 @@ class MacroPhytoshop(tk.Frame):
                 continue
 
             isReady = config[model_name]
-            
+
             if isReady == 0:
                 skipping.append(model_name)
             else:
                 processing.append(model_name)
-        
+
         return processing, skipping
 
     def __run_one_click(self):
-        
+
         self.one_click = True
         self.original_root = self.directory_entry.get()
 
@@ -2529,14 +2536,15 @@ class MacroPhytoshop(tk.Frame):
             print('Skipping the following models:')
             print('\n'.join(skipping))
 
-            processing_directories =list([os.path.join(self.directory_entry.get(), p) for p in processing]) 
+            processing_directories = list(
+                [os.path.join(self.directory_entry.get(), p) for p in processing])
 
             for folder in processing_directories:
                 try:
                     print('Processing {}'.format(os.path.basename(folder)))
 
-                    render_folder = os.path.join(folder, 'KeyShot','Renders')
-                    
+                    render_folder = os.path.join(folder, 'KeyShot', 'Renders')
+
                     self.directory_entry.set(render_folder)
 
                     self.run_macro1()
@@ -2550,7 +2558,7 @@ class MacroPhytoshop(tk.Frame):
                     self.process_shadows()
                     self.copy_originals()
                     self.resize_images()
-                    
+
                     if self.var_run_rgb_rest.get() == 1:
                         self.rgb_directory_entry.set(self.sd_path)
                         self.run_rgb_reset()
@@ -2562,7 +2570,8 @@ class MacroPhytoshop(tk.Frame):
                 except Exception as e:
                     print(e)
                     traceback.print_exc()
-                    print('Something went wrong while processing {}.\nMoving on to next model'.format(folder))
+                    print(
+                        'Something went wrong while processing {}.\nMoving on to next model'.format(folder))
         except Exception as e:
             print(e)
         finally:
@@ -2577,7 +2586,7 @@ class MacroPhytoshop(tk.Frame):
         post_macro.start()
         self.set_script11_message(
             "Post scripts edit done", "green")
-            
+
     def __model_name(self):
         selected_dir = self.get_directory_entry()
         rgx = re.compile(r'\d+\-\d+_[a-z]+', re.I)
@@ -2589,12 +2598,14 @@ class MacroPhytoshop(tk.Frame):
 
     def __gen_keyshot_mat(self):
 
-        mat_gen = MatGenerator(root=self.directory_entry.get(), parent = self)
+        mat_gen = MatGenerator(root=self.directory_entry.get(), parent=self)
         mat_gen.start()
 
     def __run_texturepacker(self):
 
-        pid = subprocess.Popen(['C:\\Program Files (x86)\\Shade Soft\\TexturePackerSetup\\DanielApp.exe', '-d', self.directory_entry.get()]).pid
+        pid = subprocess.Popen(['C:\\Program Files (x86)\\Shade Soft\\TexturePackerSetup\\DanielApp.exe',
+                                '-d', self.directory_entry.get(), '-m', 'auto']).pid
+
 
 root = tk.Tk()
 app = MacroPhytoshop(master=root)

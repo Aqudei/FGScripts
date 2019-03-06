@@ -107,7 +107,7 @@
             // 
             // collectSpriteBackgroundWorker
             // 
-            this.collectSpriteBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.collectSpriteBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.CollectSpritesBackgroundWorker_DoWork);
             this.collectSpriteBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.collectSpritesBackgroundWorker_RunWorkerCompleted);
             // 
             // button1
@@ -119,7 +119,7 @@
             this.button1.TabIndex = 8;
             this.button1.Text = "Open Settings";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.ShowSettingsButton_Clicked);
             // 
             // backgroundWorkerRunTexturePacker
             // 
@@ -150,7 +150,7 @@
             this.button2.TabIndex = 10;
             this.button2.Text = "Test: Run Depot Only";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_2);
+            this.button2.Click += new System.EventHandler(this.RunDepotButtonClicked);
             // 
             // MainForm
             // 

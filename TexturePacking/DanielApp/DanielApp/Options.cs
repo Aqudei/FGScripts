@@ -11,5 +11,8 @@ namespace DanielApp
     {
         [Option('d', "directory", Required = false)]
         public string StartDirectory { get; set; }
+
+        [Option('m', "mode", Required = false, Default = "manual")]
+        public string Mode { get; set; }
     }
 }

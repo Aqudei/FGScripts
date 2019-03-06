@@ -18,7 +18,7 @@ namespace DanielApp
 {
     public partial class MainForm : Form
     {
-        private readonly Regex _regex = new Regex(@"(\d\d\-\d\d\d_.+)[\\/]?");
+
         private List<Real3DV1> _real3DConfig;
         private string _csvLocation;
 
@@ -80,10 +80,21 @@ namespace DanielApp
 
         private void CreateOutputDirectories(string folder)
         {
-            Directory.CreateDirectory(Path.Combine(folder, "V5", "Output", "HD", "libgdx"));
-            Directory.CreateDirectory(Path.Combine(folder, "V5", "Output", "HD", "SpriteKit"));
-            Directory.CreateDirectory(Path.Combine(folder, "V5", "Output", "SD", "libgdx"));
-            Directory.CreateDirectory(Path.Combine(folder, "V5", "Output", "SD", "SpriteKit"));
+            if (Properties.Settings.Default.PACK_ANDROID)
+            {
+                CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "HD", "libgdx"));
+                CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "HD", "SpriteKit"));
+                CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "SD", "libgdx"));
+                CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "SD", "SpriteKit"));
+            }
+
+            if (Properties.Settings.Default.PACK_IOS)
+            {
+                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "libgdx"));
+                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "HD", "SpriteKit"));
+                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "libgdx"));
+                CreateCleanDirectory(Path.Combine(folder, "V5", "OutputIOS", "SD", "SpriteKit"));
+            }
         }
 
         private void CopySongsCSVPartsFeature(string folder)
@@ -103,13 +114,14 @@ namespace DanielApp
             Directory.CreateDirectory(Path.Combine(folder, "V5", "PACKSOURCE", "SD", "Frame1"));
         }
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void CollectSpritesBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             foreach (string inputFolder in listBoxFolders.Items)
                 try
                 {
                     var v5Dir = Path.Combine(inputFolder, "V5");
-                    if (Directory.Exists(v5Dir))
+
+                    if (Directory.Exists(v5Dir) && Properties.Settings.Default.PACK_ANDROID)
                     {
                         Debug.WriteLine("Removing old files...");
                         Directory.Delete(v5Dir, true);
@@ -141,6 +153,11 @@ namespace DanielApp
 
                     CopySongsCSVPartsFeature(inputFolder);
                     CreateOutputDirectories(inputFolder);
+
+                    if (Properties.Settings.Default.PACK_IOS)
+                    {
+                        PrepareIosPacking(inputFolder);
+                    }
 
                 }
                 catch (Exception exception)
@@ -268,8 +285,7 @@ namespace DanielApp
             backgroundWorkerRunTexturePacker.RunWorkerAsync();
         }
 
-
-        private void button1_Click(object sender, EventArgs e)
+        private void ShowSettingsButton_Clicked(object sender, EventArgs e)
         {
             using (var settings = new SettingsForm())
             {
@@ -336,8 +352,17 @@ namespace DanielApp
                 Debug.WriteLine("Model name found : " + modelName);
                 Debug.WriteLine($"Running TexturePacker on {inputFolder} with Model Name: {modelName}");
 
-                LibGdxPacker(tpExecutable, libgdxTps, inputFolder, modelName);
-                SpriteKit(tpExecutable, spritekittps, inputFolder, modelName);
+                if (Properties.Settings.Default.PACK_ANDROID)
+                {
+                    LibGdxPacker(tpExecutable, libgdxTps, inputFolder, modelName);
+                    SpriteKit(tpExecutable, spritekittps, inputFolder, modelName);
+                }
+
+                if (Properties.Settings.Default.PACK_IOS)
+                {
+                    LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
+                    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
+                }
             }
         }
 
@@ -403,6 +428,15 @@ namespace DanielApp
         //    p.WaitForExit();
         //}
 
+        private string GetSeriesNumber(string input)
+        {
+            var rgxSeries = new Regex(@"\d\d\-\d\d\d");
+            var result = rgxSeries.Match(input);
+            if (result.Success)
+                return result.Groups[0].Value;
+
+            throw new Exception($"Series number not found from {input}!");
+        }
 
         private void SpriteKit(string tpExecutable, string tps, string inputFolder, string modelName)
         {
@@ -629,7 +663,7 @@ namespace DanielApp
             progressBar1.Visible = false;
             if (e.Result == null)
             {
-             
+
                 RunDepot();
                 Debug.WriteLine("Processing done...");
                 return;
@@ -649,7 +683,7 @@ namespace DanielApp
             RunDepot();
         }
 
-        private void button2_Click_2(object sender, EventArgs e)
+        private void RunDepotButtonClicked(object sender, EventArgs e)
         {
             RunDepot();
         }
@@ -695,26 +729,25 @@ namespace DanielApp
                                                      throw new Exception("Unable to obtain model names from 'Read3d_V1.csv' file");
                                                  }
 
+
+
                                                  var dirs = Directory.GetDirectories(options.StartDirectory);
                                                  foreach (var dir in dirs)
                                                  {
                                                      var modelName = ParseModelName(dir);
 
-                                                     if (_real3DConfig.All(dv1 => dv1.Model.Trim() != modelName.Trim()))
+                                                     if (_real3DConfig.All(dv1 => dv1.Model.Trim() != modelName.Item1.Trim()))
                                                          continue;
 
-                                                     if (!string.IsNullOrWhiteSpace(modelName))
+                                                     if (!string.IsNullOrWhiteSpace(modelName.Item1))
                                                          listBoxFolders.BeginInvoke(new Action(() =>
                                                          {
-                                                             listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName));
+                                                             var idx = listBoxFolders.Items.Add(Path.Combine(dir, "KeyShot", "Renders", modelName.Item1));
                                                          }));
                                                  }
 
-
-                                                 //button2.BeginInvoke(new Action(() =>
-                                                 //{
-                                                 //    button2.PerformClick();
-                                                 //}));
+                                                 if (options.Mode.ToLower() == "manual")
+                                                     return;
 
                                                  buttonRunPacker.BeginInvoke(new Action(() =>
                                                  {
@@ -732,10 +765,147 @@ namespace DanielApp
 
         }
 
-        private string ParseModelName(string dirName)
+        private Tuple<string, string> ParseModelName(string dirName)
         {
-            var rslt = _regex.Match(dirName);
-            return !rslt.Success ? string.Empty : rslt.Groups[1].Value.Trim();
+            var regexModelName = new Regex(@"((\d\d\-\d\d\d)_[a-z0-9]+)", RegexOptions.IgnoreCase);
+            var matchResult = regexModelName.Match(dirName);
+            // return (modelName, seriesNumber)
+            return !matchResult.Success ? new Tuple<string, string>(string.Empty, string.Empty) : new Tuple<string, string>(matchResult.Groups[1].Value.Trim(), matchResult.Groups[2].Value.Trim());
+        }
+
+        private void CreateCleanDirectory(string directory)
+        {
+            try
+            {
+                if (Directory.Exists(directory))
+                    Directory.Delete(directory, true);
+
+                Directory.CreateDirectory(directory);
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
+        }
+
+        private void PrepareIosPacking(string modelFolder)
+        {
+            var modelName = ParseModelName(modelFolder);
+
+            var packSourceSD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "SD");
+            var packSourceHD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "HD");
+
+            var packSourceIosSD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -SD");
+            var packSourceIosHD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -HD");
+
+            var packSourceIosUI_SD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_UI -SD");
+            var packSourceIosUI_HD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_UI-HD");
+
+            CreateCleanDirectory(packSourceIosSD);
+            CreateCleanDirectory(packSourceIosHD);
+            CreateCleanDirectory(packSourceIosUI_SD);
+            CreateCleanDirectory(packSourceIosUI_HD);
+
+            var rgx = new Regex(@"(.+)\.\d+\.png", RegexOptions.IgnoreCase);
+
+            // copy hd
+            foreach (var file in Directory.GetFiles(packSourceHD, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(file,
+                    rgx.IsMatch(Path.GetFileName(file))
+                        ? Path.Combine(packSourceIosHD, Path.GetFileName(file))
+                        : Path.Combine(packSourceIosUI_HD, Path.GetFileName(file)));
+            }
+
+            // copy sd
+            foreach (var file in Directory.GetFiles(packSourceSD, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(file,
+                    rgx.IsMatch(Path.GetFileName(file))
+                        ? Path.Combine(packSourceIosSD, Path.GetFileName(file))
+                        : Path.Combine(packSourceIosUI_SD, Path.GetFileName(file)));
+            }
+
+            //arrange hd
+            var files = Directory.GetFiles(packSourceIosHD, "*.png", SearchOption.AllDirectories).Where(s => rgx.IsMatch(s))
+                .Select(s =>
+                {
+                    var result = rgx.Match(Path.GetFileName(s));
+                    return new Tuple<string, string>(result.Groups[1].Value, Path.GetFileName(s));
+                })
+                .GroupBy(tuple => tuple.Item1);
+
+            foreach (var group in files)
+            {
+                var combine = Path.Combine(packSourceIosHD, group.Key);
+                Directory.CreateDirectory(combine);
+
+                foreach (var tuple in group)
+                {
+                    var source = Path.Combine(packSourceIosHD, tuple.Item2);
+                    var destination = Path.Combine(combine, tuple.Item2);
+                    File.Move(source, destination);
+                }
+            }
+
+            //arrange sd
+            files = Directory.GetFiles(packSourceIosSD, "*.png", SearchOption.AllDirectories).Where(s => rgx.IsMatch(s))
+                .Select(s =>
+                {
+                    var result = rgx.Match(Path.GetFileName(s));
+                    return new Tuple<string, string>(result.Groups[1].Value, Path.GetFileName(s));
+                })
+                .GroupBy(tuple => tuple.Item1);
+
+            foreach (var group in files)
+            {
+                var combine = Path.Combine(packSourceIosSD, group.Key);
+                Directory.CreateDirectory(combine);
+
+                foreach (var tuple in group)
+                {
+                    var source = Path.Combine(packSourceIosSD, tuple.Item2);
+                    var destination = Path.Combine(combine, tuple.Item2);
+                    File.Move(source, destination);
+                }
+            }
+        }
+
+        private void LibGdxPackerIos(string tpExecutable, string tpsFile,
+            string inputFolder, string modelName)
+        {
+            var seriesNumber = GetSeriesNumber(modelName);
+
+            var modelFolders = Directory.GetDirectories(Path.Combine(inputFolder, "V5", "PACKSOURCEIOS"), "*_Model*");
+            foreach (var modelFolder in modelFolders)
+            {
+                var isHd = modelFolder.EndsWith("-HD");
+
+                var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", isHd ? "HD" : "SD", "libgdx");
+
+                foreach (var altasInputFolder in Directory.GetDirectories(modelFolder))
+                {
+                    var p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack-{n}.png"}\" --data \"{outputAtlasFolder + "/" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack.atlas"}\" \"{altasInputFolder}\" \"{tpsFile}\"");
+                    p.WaitForExit();
+                }
+            }
+        }
+
+        private void SpriteKitPackerIos(string tpExecutable, string tps, string inputFolder, string modelName)
+        {
+            var seriesNumber = GetSeriesNumber(modelName);
+            var modelFolders = Directory.GetDirectories(Path.Combine(inputFolder, "V5", "PACKSOURCEIOS"), "*_Model*");
+            foreach (var modelFolder in modelFolders)
+            {
+                foreach (var partFolder in Directory.GetDirectories(modelFolder))
+                {
+                    var isHd = modelFolder.EndsWith("-HD");
+                    var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", isHd ? "HD" : "SD", "SpriteKit");
+                    var p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(partFolder) + "_SD_Pack.atlasc"}\" \"{partFolder}\" \"{tps}\"");
+                    p.WaitForExit();
+                }
+            }
         }
     }
 }
+
