@@ -51,6 +51,7 @@
             this.listBoxFolders.Name = "listBoxFolders";
             this.listBoxFolders.Size = new System.Drawing.Size(560, 212);
             this.listBoxFolders.TabIndex = 2;
+            this.listBoxFolders.DoubleClick += new System.EventHandler(this.listBoxFolders_DoubleClick);
             // 
             // buttonNew
             // 

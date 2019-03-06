@@ -700,7 +700,7 @@ namespace DanielApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = @"Last Build on March 6, 2019 4:07 PM (PH)";
+            Text = @"Last Build on March 7, 2019 4:44 AM (PH)";
 
             Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
 
@@ -868,7 +868,7 @@ namespace DanielApp
             foreach (var group in files)
             {
                 Debug.WriteLine($"Processing IOS HD image group {group.Key}");
-                var combine = Path.Combine(packSourceIosHD, group.Key);
+                var combine = Path.Combine(packSourceIosHD, $"{group.Key}.atlas");
                 Directory.CreateDirectory(combine);
 
                 foreach (var tuple in group)
@@ -892,7 +892,7 @@ namespace DanielApp
             {
                 Debug.WriteLine($"Processing IOS SD image group {group.Key}");
 
-                var combine = Path.Combine(packSourceIosSD, group.Key);
+                var combine = Path.Combine(packSourceIosSD, $"{group.Key}.atlas");
                 Directory.CreateDirectory(combine);
 
                 foreach (var tuple in group)
@@ -982,6 +982,14 @@ namespace DanielApp
                     RunProcess($"\"{tpExecutable}\"",
                         $"--data \"{outputAtlasFolder + "/" + seriesNumber + $"_{(isHd ? "HD" : "SD")}" + "_" + Path.GetFileName(partFolder) + ".atlasc"}\" \"{partFolder}\" \"{tps}\"");
                 }
+            }
+        }
+
+        private void listBoxFolders_DoubleClick(object sender, EventArgs e)
+        {
+            if (listBoxFolders.SelectedItem != null)
+            {
+                Process.Start("explorer.exe", listBoxFolders.SelectedItem.ToString());
             }
         }
     }
