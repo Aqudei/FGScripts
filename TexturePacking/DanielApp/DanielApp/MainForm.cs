@@ -458,23 +458,20 @@ namespace DanielApp
 
             Debug.WriteLine("Packing SpriteKit Frame0 SD...");
             Debug.WriteLine($"SpriteKit Packing: {sdFrame0}");
-            var p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "-SD_Pack0.atlasc"}\" \"{sdFrame0}\" \"{tps}\"");
-            p.WaitForExit();
+
+            RunProcess($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "-SD_Pack0.atlasc"}\" \"{sdFrame0}\" \"{tps}\"");
 
             Debug.WriteLine("Packing SpriteKit Frame1 SD...");
             Debug.WriteLine($"SpriteKit Packing: {sdFrame1}");
-            p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "-SD_Pack1.atlasc"}\" \"{sdFrame1}\" \"{tps}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitSDFrame01 + "/" + modelName + "-SD_Pack1.atlasc"}\" \"{sdFrame1}\" \"{tps}\"");
 
             Debug.WriteLine("Packing SpriteKit Frame0 HD...");
             Debug.WriteLine($"SpriteKit Packing: {hdFrame0}");
-            p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack0.atlasc"}\" \"{hdFrame0}\" \"{tps}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack0.atlasc"}\" \"{hdFrame0}\" \"{tps}\"");
 
             Debug.WriteLine("Packing SpriteKit Frame1 HD...");
             Debug.WriteLine($"SpriteKit Packing: {hdFrame1}");
-            p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack1.atlasc"}\" \"{hdFrame1}\" \"{tps}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--data \"{outputSpriteKitHDFrame01 + "/" + modelName + "_Pack1.atlasc"}\" \"{hdFrame1}\" \"{tps}\"");
         }
 
         private void LibGdxPacker(string tpExecutable, string tpsFile, string inputFolder, string modelName)
@@ -489,23 +486,19 @@ namespace DanielApp
 
             Debug.WriteLine("Packing Libgdx Frame0 SD...");
             Debug.WriteLine($"LibGDX Packing: {sdFrame0}");
-            var p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0.atlas"}\" \"{sdFrame0}\" \"{tpsFile}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0.atlas"}\" \"{sdFrame0}\" \"{tpsFile}\"");
 
             Debug.WriteLine("Packing Libgdx Frame1 SD...");
             Debug.WriteLine($"LibGDX Packing: {sdFrame1}");
-            p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1.atlas"}\" \"{sdFrame1}\" \"{tpsFile}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1.atlas"}\" \"{sdFrame1}\" \"{tpsFile}\"");
 
             Debug.WriteLine("Packing Libgdx Frame0 HD...");
             Debug.WriteLine($"LibGDX Packing: {hdFrame0}");
-            p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0.atlas"}\" \"{hdFrame0}\" \"{tpsFile}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0.atlas"}\" \"{hdFrame0}\" \"{tpsFile}\"");
 
             Debug.WriteLine("Packing Libgdx Frame1 HD...");
             Debug.WriteLine($"LibGDX Packing: {hdFrame1}");
-            p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{hdFrame1}\" \"{tpsFile}\"");
-            p.WaitForExit();
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{hdFrame1}\" \"{tpsFile}\"");
 
             if (!string.IsNullOrWhiteSpace(_csvLocation))
             {
@@ -633,9 +626,7 @@ namespace DanielApp
                         RoboCopy(outputFolderIos, depotPath);
 
                         Debug.WriteLine("[Depot] Copying files from SAVE, MP3 and CSV files\n");
-                        process = Process.Start("robocopy", $"\"{inputFolder}\" \"{depotPath}\" *.sav *.csv *.mp3");
-                        process.WaitForExit();
-                        process.Close();
+                        RunProcess("robocopy", $"\"{inputFolder}\" \"{depotPath}\" *.sav *.csv *.mp3");
 
                         //foreach (var file in Directory.GetFiles(inputFolder, "*.*"))
                         //{
@@ -672,9 +663,7 @@ namespace DanielApp
             {
                 Debug.WriteLine($"[Depot] Copying files from {outputFolder} to {depotPath}\n");
                 //process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /MIR");
-                var process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /E");
-                process.WaitForExit();
-                process.Close();
+                RunProcess("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /E");
             }
         }
 
@@ -815,7 +804,7 @@ namespace DanielApp
 
             var modelName = ParseModelName(modelFolder);
 
-            
+
             var packSourceSD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "SD");
             Debug.WriteLine($"Reading SD images from {packSourceSD}");
 
@@ -915,18 +904,39 @@ namespace DanielApp
             Debug.WriteLine("Running Ios LibGdx packer");
             var seriesNumber = GetSeriesNumber(modelName);
 
+            CreateCleanDirectory(Path.Combine(inputFolder, "V5", "OutputIOS", "HD", "libgdx"));
+            CreateCleanDirectory(Path.Combine(inputFolder, "V5", "OutputIOS", "SD", "libgdx"));
+
             var modelFolders = Directory.GetDirectories(Path.Combine(inputFolder, "V5", "PACKSOURCEIOS"), "*_Model*");
             foreach (var modelFolder in modelFolders)
             {
                 var isHd = modelFolder.EndsWith("-HD");
 
                 var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", isHd ? "HD" : "SD", "libgdx");
-
+                
                 foreach (var altasInputFolder in Directory.GetDirectories(modelFolder))
                 {
-                    var p = Process.Start($"\"{tpExecutable}\"", $"--sheet \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack-{n}.png"}\" --data \"{outputAtlasFolder + "/" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack.atlas"}\" \"{altasInputFolder}\" \"{tpsFile}\"");
-                    p.WaitForExit();
+                    Debug.WriteLine($"Processing Ios LibGdx {altasInputFolder}");
+                    RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack-{n}.png"}\" --data \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(altasInputFolder) + $"_{(isHd ? "HD" : "SD")}" + "_Pack.atlas"}\" \"{altasInputFolder}\" \"{tpsFile}\"");
                 }
+            }
+        }
+
+        private void RunProcess(string executable, string arguments)
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                FileName = executable,
+                Arguments = arguments,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+
+            using (var process = Process.Start(startInfo))
+            {
+                process.WaitForExit();
+                process.Close();
             }
         }
 
@@ -935,14 +945,19 @@ namespace DanielApp
             Debug.WriteLine("Running Ios SpriteKit packer...");
             var seriesNumber = GetSeriesNumber(modelName);
             var modelFolders = Directory.GetDirectories(Path.Combine(inputFolder, "V5", "PACKSOURCEIOS"), "*_Model*");
+
+            CreateCleanDirectory(Path.Combine(inputFolder, "V5", "OutputIOS", "SD", "SpriteKit"));
+            CreateCleanDirectory(Path.Combine(inputFolder, "V5", "OutputIOS", "HD", "SpriteKit"));
+
             foreach (var modelFolder in modelFolders)
             {
                 foreach (var partFolder in Directory.GetDirectories(modelFolder))
                 {
+                    Debug.WriteLine($"Processing Ios SpriteKit {partFolder}");
                     var isHd = modelFolder.EndsWith("-HD");
-                    var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", isHd ? "HD" : "SD", "SpriteKit");
-                    var p = Process.Start($"\"{tpExecutable}\"", $"--data \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(partFolder) + "_SD_Pack.atlasc"}\" \"{partFolder}\" \"{tps}\"");
-                    p.WaitForExit();
+                    var outputAtlasFolder = Path.Combine(inputFolder, "V5", "OutputIOS", $"{(isHd ? "HD" : "SD")}", "SpriteKit");
+                    RunProcess($"\"{tpExecutable}\"",
+                        $"--data \"{outputAtlasFolder + "/" + seriesNumber + "_" + Path.GetFileName(partFolder) + $"_{(isHd ? "HD" : "SD")}_Pack.atlasc"}\" \"{partFolder}\" \"{tps}\"");
                 }
             }
         }
