@@ -119,40 +119,10 @@ namespace DanielApp
             foreach (string inputFolder in listBoxFolders.Items)
                 try
                 {
-                    var v5Dir = Path.Combine(inputFolder, "V5");
-
-                    if (Directory.Exists(v5Dir) && Properties.Settings.Default.PACK_ANDROID)
+                    if (Properties.Settings.Default.PACK_ANDROID)
                     {
-                        Debug.WriteLine("Removing old files...");
-                        Directory.Delete(v5Dir, true);
+                        PrepareAndroidPacking(inputFolder);
                     }
-
-                    var outputSDDirectory = Path.Combine(inputFolder, "V5", "PACKSOURCE", "SD");
-                    var outputHDDirectory = Path.Combine(inputFolder, "V5", "PACKSOURCE", "HD");
-
-                    var partCsvFilename = FindFile(inputFolder, "*_Parts.csv");
-                    if (partCsvFilename == null) throw new Exception("Parts.csv was not found");
-
-                    var partsCsv = new PartsCsv(partCsvFilename);
-
-                    var featuresCsvFile = FindFile(inputFolder, "*_Features.csv");
-                    if (featuresCsvFile == null) throw new Exception("Features.csv was not found");
-
-                    CreateV5TopDirectories(inputFolder);
-
-                    CopyFrames("SD", partsCsv, inputFolder);
-                    CopyFrames("HD", partsCsv, inputFolder);
-                    CopyUIImages("_UI", inputFolder);
-                    CopyUIImages("_UI - LD", inputFolder);
-
-                    if (!Properties.Settings.Default.SKIP_RENAME)
-                    {
-                        RenamePointToDash(outputSDDirectory);
-                        RenamePointToDash(outputHDDirectory);
-                    }
-
-                    CopySongsCSVPartsFeature(inputFolder);
-                    CreateOutputDirectories(inputFolder);
 
                     if (Properties.Settings.Default.PACK_IOS)
                     {
@@ -165,6 +135,44 @@ namespace DanielApp
                     Debug.WriteLine(exception.Message);
                     Debug.WriteLine($"Error:In folder {inputFolder}. Moving on to next model.");
                 }
+        }
+
+        private void PrepareAndroidPacking(string inputFolder)
+        {
+            var v5Dir = Path.Combine(inputFolder, "V5");
+
+            if (Directory.Exists(v5Dir) && Properties.Settings.Default.PACK_ANDROID)
+            {
+                Debug.WriteLine("Removing old files...");
+                Directory.Delete(v5Dir, true);
+            }
+
+            var outputSDDirectory = Path.Combine(inputFolder, "V5", "PACKSOURCE", "SD");
+            var outputHDDirectory = Path.Combine(inputFolder, "V5", "PACKSOURCE", "HD");
+
+            var partCsvFilename = FindFile(inputFolder, "*_Parts.csv");
+            if (partCsvFilename == null) throw new Exception("Parts.csv was not found");
+
+            var partsCsv = new PartsCsv(partCsvFilename);
+
+            var featuresCsvFile = FindFile(inputFolder, "*_Features.csv");
+            if (featuresCsvFile == null) throw new Exception("Features.csv was not found");
+
+            CreateV5TopDirectories(inputFolder);
+
+            CopyFrames("SD", partsCsv, inputFolder);
+            CopyFrames("HD", partsCsv, inputFolder);
+            CopyUIImages("_UI", inputFolder);
+            CopyUIImages("_UI - LD", inputFolder);
+
+            if (!Properties.Settings.Default.SKIP_RENAME)
+            {
+                RenamePointToDash(outputSDDirectory);
+                RenamePointToDash(outputHDDirectory);
+            }
+
+            CopySongsCSVPartsFeature(inputFolder);
+            CreateOutputDirectories(inputFolder);
         }
 
         private void RenamePointToDash(string outputSDDirectory)
@@ -190,8 +198,6 @@ namespace DanielApp
 
         private void CopyUIImages(string folderEndsWith, string inputFolder)
         {
-
-
             var rgx = new Regex(@"_(\d+)\.png", RegexOptions.IgnoreCase);
 
             var uiDir = FindDirectoryEndingIn(folderEndsWith, inputFolder);
@@ -787,6 +793,7 @@ namespace DanielApp
 
         private void CreateCleanDirectory(string directory)
         {
+            Debug.WriteLine($"Creating a clean directory {directory}.");
             try
             {
                 if (Directory.Exists(directory))
@@ -802,16 +809,27 @@ namespace DanielApp
 
         private void PrepareIosPacking(string modelFolder)
         {
+            Debug.WriteLine("Preparing texture packer for IOS");
+
             var modelName = ParseModelName(modelFolder);
 
+
+            
             var packSourceSD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "SD");
+            Debug.WriteLine($"Reading SD images from {packSourceSD}");
+
             var packSourceHD = Path.Combine(modelFolder, "V5", "PACKSOURCE", "HD");
+            Debug.WriteLine($"Reading HD images from {packSourceHD}");
 
             var packSourceIosSD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -SD");
-            var packSourceIosHD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -HD");
+            Debug.WriteLine($"Writing IOS packed SD texture to {packSourceIosSD}.");
 
-            var packSourceIosUI_SD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_UI -SD");
+            var packSourceIosHD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_Model -HD");
+            Debug.WriteLine($"Writing IOS packed HD texture to {packSourceIosHD}.");
+
+            var packSourceIosUI_SD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_UI-SD");
             var packSourceIosUI_HD = Path.Combine(modelFolder, "V5", "PACKSOURCEIOS", $"{modelName.Item2}_UI-HD");
+
 
             CreateCleanDirectory(packSourceIosSD);
             CreateCleanDirectory(packSourceIosHD);
@@ -821,8 +839,10 @@ namespace DanielApp
             var rgx = new Regex(@"(.+)\.\d+\.png", RegexOptions.IgnoreCase);
 
             // copy hd
+            Debug.WriteLine("Copying IOS HD sources...");
             foreach (var file in Directory.GetFiles(packSourceHD, "*.*", SearchOption.AllDirectories))
             {
+                Debug.WriteLine($"Processing {file}...");
                 File.Copy(file,
                     rgx.IsMatch(Path.GetFileName(file))
                         ? Path.Combine(packSourceIosHD, Path.GetFileName(file))
@@ -830,8 +850,10 @@ namespace DanielApp
             }
 
             // copy sd
+            Debug.WriteLine("Copying IOS SD sources...");
             foreach (var file in Directory.GetFiles(packSourceSD, "*.*", SearchOption.AllDirectories))
             {
+                Debug.WriteLine($"Processing {file}...");
                 File.Copy(file,
                     rgx.IsMatch(Path.GetFileName(file))
                         ? Path.Combine(packSourceIosSD, Path.GetFileName(file))
@@ -849,6 +871,7 @@ namespace DanielApp
 
             foreach (var group in files)
             {
+                Debug.WriteLine($"Processing IOS HD image group {group.Key}");
                 var combine = Path.Combine(packSourceIosHD, group.Key);
                 Directory.CreateDirectory(combine);
 
@@ -871,6 +894,8 @@ namespace DanielApp
 
             foreach (var group in files)
             {
+                Debug.WriteLine($"Processing IOS SD image group {group.Key}");
+
                 var combine = Path.Combine(packSourceIosSD, group.Key);
                 Directory.CreateDirectory(combine);
 
@@ -886,6 +911,7 @@ namespace DanielApp
         private void LibGdxPackerIos(string tpExecutable, string tpsFile,
             string inputFolder, string modelName)
         {
+            Debug.WriteLine("Running Ios LibGdx packer");
             var seriesNumber = GetSeriesNumber(modelName);
 
             var modelFolders = Directory.GetDirectories(Path.Combine(inputFolder, "V5", "PACKSOURCEIOS"), "*_Model*");
@@ -905,6 +931,7 @@ namespace DanielApp
 
         private void SpriteKitPackerIos(string tpExecutable, string tps, string inputFolder, string modelName)
         {
+            Debug.WriteLine("Running Ios SpriteKit packer...");
             var seriesNumber = GetSeriesNumber(modelName);
             var modelFolders = Directory.GetDirectories(Path.Combine(inputFolder, "V5", "PACKSOURCEIOS"), "*_Model*");
             foreach (var modelFolder in modelFolders)
