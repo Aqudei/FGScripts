@@ -600,6 +600,8 @@ namespace DanielApp
             }
         }
 
+
+
         private void RunDepot()
         {
             Process process;
@@ -617,14 +619,10 @@ namespace DanielApp
                     foreach (string inputFolder in listBoxFolders.Items)
                     {
                         var outputFolder = Path.Combine(inputFolder, "V5", "Output");
-                        if (Directory.Exists(outputFolder))
-                        {
-                            Debug.WriteLine($"[Depot] Copying files from {outputFolder} to {depotPath}\n");
-                            //process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /MIR");
-                            process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /E");
-                            process.WaitForExit();
-                            process.Close();
-                        }
+                        RoboCopy(outputFolder, depotPath);
+
+                        var outputFolderIos = Path.Combine(inputFolder, "V5", "OutputIOS");
+                        RoboCopy(outputFolderIos, depotPath);
 
                         Debug.WriteLine("[Depot] Copying files from SAVE, MP3 and CSV files\n");
                         process = Process.Start("robocopy", $"\"{inputFolder}\" \"{depotPath}\" *.sav *.csv *.mp3");
@@ -649,12 +647,26 @@ namespace DanielApp
                                 Directory.CreateDirectory(Path.Combine(depotPath, modelName));
                                 Debug.WriteLine($"[Depot] Copying icon files from {iconFolder} to {depotPath}\n");
                                 // process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /MIR");
-                                process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /E");
-                                process.WaitForExit();
-                                process.Close();
+
+                                RoboCopy(iconFolder, Path.Combine(depotPath, modelName));
+                                //process = Process.Start("robocopy", $"\"{iconFolder}\" \"{Path.Combine(depotPath, modelName)}\" /E");
+                                //process.WaitForExit();
+                                //process.Close();
                             }
                         }
                     }
+            }
+        }
+
+        private void RoboCopy(string outputFolder, string depotPath)
+        {
+            if (Directory.Exists(outputFolder) && Directory.Exists(depotPath))
+            {
+                Debug.WriteLine($"[Depot] Copying files from {outputFolder} to {depotPath}\n");
+                //process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /MIR");
+                var process = Process.Start("robocopy", $"\"{outputFolder}\" \"{depotPath}\" /E");
+                process.WaitForExit();
+                process.Close();
             }
         }
 
