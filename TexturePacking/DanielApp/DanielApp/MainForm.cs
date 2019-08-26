@@ -375,7 +375,6 @@ namespace DanielApp
                 if (Properties.Settings.Default.PACK_IOS_LIBGDX)
                 {
                     LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
-                    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
                 }
 
                 if (Properties.Settings.Default.PACK_IOS_SPRITEKIT)

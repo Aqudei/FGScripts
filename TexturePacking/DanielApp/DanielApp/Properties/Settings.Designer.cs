@@ -133,7 +133,7 @@ namespace DanielApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool PACK_ANDROID_SPRITEKIT {
             get {
                 return ((bool)(this["PACK_ANDROID_SPRITEKIT"]));

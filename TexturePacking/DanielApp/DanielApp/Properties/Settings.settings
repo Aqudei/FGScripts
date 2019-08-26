@@ -30,7 +30,7 @@
       <Value Profile="(Default)">json</Value>
     </Setting>
     <Setting Name="PACK_ANDROID_SPRITEKIT" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="PACK_IOS_SPRITEKIT" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
