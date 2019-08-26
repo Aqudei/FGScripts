@@ -20,14 +20,20 @@
     <Setting Name="DO_DEPOT" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="PACK_ANDROID" Type="System.Boolean" Scope="User">
+    <Setting Name="PACK_ANDROID_LIBGDX" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="PACK_IOS" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="PACK_IOS_LIBGDX" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="LIBGDX_DATFILE_EXTENTION" Type="System.String" Scope="User">
       <Value Profile="(Default)">json</Value>
+    </Setting>
+    <Setting Name="PACK_ANDROID_SPRITEKIT" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="PACK_IOS_SPRITEKIT" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

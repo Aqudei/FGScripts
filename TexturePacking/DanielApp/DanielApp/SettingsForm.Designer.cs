@@ -44,10 +44,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxDepotPath = new System.Windows.Forms.TextBox();
             this.checkBoxDoDepot = new System.Windows.Forms.CheckBox();
-            this.checkBoxPackAndroid = new System.Windows.Forms.CheckBox();
-            this.checkBoxPackIOS = new System.Windows.Forms.CheckBox();
+            this.checkBoxPackAndroidLibGdx = new System.Windows.Forms.CheckBox();
+            this.checkBoxPackIOSLibGdx = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxLibGdxDataFileExtention = new System.Windows.Forms.TextBox();
+            this.checkBoxPackAndroidSpritekit = new System.Windows.Forms.CheckBox();
+            this.checkBoxPackIosSpriteKit = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -158,7 +160,7 @@
             // checkBoxSkipRename
             // 
             this.checkBoxSkipRename.AutoSize = true;
-            this.checkBoxSkipRename.Location = new System.Drawing.Point(176, 261);
+            this.checkBoxSkipRename.Location = new System.Drawing.Point(206, 261);
             this.checkBoxSkipRename.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBoxSkipRename.Name = "checkBoxSkipRename";
             this.checkBoxSkipRename.Size = new System.Drawing.Size(155, 21);
@@ -208,27 +210,27 @@
             this.checkBoxDoDepot.UseVisualStyleBackColor = true;
             this.checkBoxDoDepot.CheckedChanged += new System.EventHandler(this.checkBoxDoDepot_CheckedChanged);
             // 
-            // checkBoxPackAndroid
+            // checkBoxPackAndroidLibGdx
             // 
-            this.checkBoxPackAndroid.AutoSize = true;
-            this.checkBoxPackAndroid.Location = new System.Drawing.Point(20, 299);
-            this.checkBoxPackAndroid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.checkBoxPackAndroid.Name = "checkBoxPackAndroid";
-            this.checkBoxPackAndroid.Size = new System.Drawing.Size(114, 21);
-            this.checkBoxPackAndroid.TabIndex = 17;
-            this.checkBoxPackAndroid.Text = "Pack Android";
-            this.checkBoxPackAndroid.UseVisualStyleBackColor = true;
+            this.checkBoxPackAndroidLibGdx.AutoSize = true;
+            this.checkBoxPackAndroidLibGdx.Location = new System.Drawing.Point(20, 287);
+            this.checkBoxPackAndroidLibGdx.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxPackAndroidLibGdx.Name = "checkBoxPackAndroidLibGdx";
+            this.checkBoxPackAndroidLibGdx.Size = new System.Drawing.Size(162, 21);
+            this.checkBoxPackAndroidLibGdx.TabIndex = 17;
+            this.checkBoxPackAndroidLibGdx.Text = "Pack Android LibGdx";
+            this.checkBoxPackAndroidLibGdx.UseVisualStyleBackColor = true;
             // 
-            // checkBoxPackIOS
+            // checkBoxPackIOSLibGdx
             // 
-            this.checkBoxPackIOS.AutoSize = true;
-            this.checkBoxPackIOS.Location = new System.Drawing.Point(176, 299);
-            this.checkBoxPackIOS.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.checkBoxPackIOS.Name = "checkBoxPackIOS";
-            this.checkBoxPackIOS.Size = new System.Drawing.Size(88, 21);
-            this.checkBoxPackIOS.TabIndex = 16;
-            this.checkBoxPackIOS.Text = "Pack IOS";
-            this.checkBoxPackIOS.UseVisualStyleBackColor = true;
+            this.checkBoxPackIOSLibGdx.AutoSize = true;
+            this.checkBoxPackIOSLibGdx.Location = new System.Drawing.Point(206, 287);
+            this.checkBoxPackIOSLibGdx.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxPackIOSLibGdx.Name = "checkBoxPackIOSLibGdx";
+            this.checkBoxPackIOSLibGdx.Size = new System.Drawing.Size(136, 21);
+            this.checkBoxPackIOSLibGdx.TabIndex = 16;
+            this.checkBoxPackIOSLibGdx.Text = "Pack IOS LibGdx";
+            this.checkBoxPackIOSLibGdx.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -248,15 +250,39 @@
             this.textBoxLibGdxDataFileExtention.Size = new System.Drawing.Size(171, 22);
             this.textBoxLibGdxDataFileExtention.TabIndex = 18;
             // 
+            // checkBoxPackAndroidSpritekit
+            // 
+            this.checkBoxPackAndroidSpritekit.AutoSize = true;
+            this.checkBoxPackAndroidSpritekit.Location = new System.Drawing.Point(20, 316);
+            this.checkBoxPackAndroidSpritekit.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxPackAndroidSpritekit.Name = "checkBoxPackAndroidSpritekit";
+            this.checkBoxPackAndroidSpritekit.Size = new System.Drawing.Size(171, 21);
+            this.checkBoxPackAndroidSpritekit.TabIndex = 21;
+            this.checkBoxPackAndroidSpritekit.Text = "Pack Android SpriteKit";
+            this.checkBoxPackAndroidSpritekit.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxPackIosSpriteKit
+            // 
+            this.checkBoxPackIosSpriteKit.AutoSize = true;
+            this.checkBoxPackIosSpriteKit.Location = new System.Drawing.Point(206, 316);
+            this.checkBoxPackIosSpriteKit.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxPackIosSpriteKit.Name = "checkBoxPackIosSpriteKit";
+            this.checkBoxPackIosSpriteKit.Size = new System.Drawing.Size(145, 21);
+            this.checkBoxPackIosSpriteKit.TabIndex = 20;
+            this.checkBoxPackIosSpriteKit.Text = "Pack IOS SpriteKit";
+            this.checkBoxPackIosSpriteKit.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 365);
+            this.Controls.Add(this.checkBoxPackAndroidSpritekit);
+            this.Controls.Add(this.checkBoxPackIosSpriteKit);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxLibGdxDataFileExtention);
-            this.Controls.Add(this.checkBoxPackAndroid);
-            this.Controls.Add(this.checkBoxPackIOS);
+            this.Controls.Add(this.checkBoxPackAndroidLibGdx);
+            this.Controls.Add(this.checkBoxPackIOSLibGdx);
             this.Controls.Add(this.checkBoxDoDepot);
             this.Controls.Add(this.buttonDepot);
             this.Controls.Add(this.label2);
@@ -299,9 +325,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxDepotPath;
         private System.Windows.Forms.CheckBox checkBoxDoDepot;
-        private System.Windows.Forms.CheckBox checkBoxPackAndroid;
-        private System.Windows.Forms.CheckBox checkBoxPackIOS;
+        private System.Windows.Forms.CheckBox checkBoxPackAndroidLibGdx;
+        private System.Windows.Forms.CheckBox checkBoxPackIOSLibGdx;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxLibGdxDataFileExtention;
+        private System.Windows.Forms.CheckBox checkBoxPackAndroidSpritekit;
+        private System.Windows.Forms.CheckBox checkBoxPackIosSpriteKit;
     }
 }

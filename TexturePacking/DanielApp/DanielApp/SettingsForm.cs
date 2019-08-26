@@ -66,8 +66,14 @@ namespace DanielApp
             Properties.Settings.Default.TP_EXECUTABLE_PATH = labelExecutablePath.Text;
             Properties.Settings.Default.LIBGDX_TPS_FILE = textBoxLibGdxTps.Text;
             Properties.Settings.Default.SPRITEKIT_TPS_FILE = textBoxSpriteKitTps.Text;
-            Properties.Settings.Default.PACK_ANDROID = checkBoxPackAndroid.Checked;
-            Properties.Settings.Default.PACK_IOS = checkBoxPackIOS.Checked;
+
+
+            Properties.Settings.Default.PACK_ANDROID_LIBGDX = checkBoxPackAndroidLibGdx.Checked;
+            Properties.Settings.Default.PACK_IOS_LIBGDX = checkBoxPackIOSLibGdx.Checked;
+            Properties.Settings.Default.PACK_ANDROID_SPRITEKIT = checkBoxPackAndroidSpritekit.Checked;
+            Properties.Settings.Default.PACK_IOS_SPRITEKIT = checkBoxPackIosSpriteKit.Checked;
+
+
             Properties.Settings.Default.LIBGDX_DATFILE_EXTENTION = textBoxLibGdxDataFileExtention.Text;
 
             Properties.Settings.Default.Save();
@@ -97,9 +103,13 @@ namespace DanielApp
             textBoxDepotPath.Text = Properties.Settings.Default.DEPOT_PATH;
             checkBoxDoDepot.Checked = Properties.Settings.Default.DO_DEPOT;
 
-            checkBoxPackIOS.Checked = Properties.Settings.Default.PACK_IOS;
+            checkBoxPackAndroidLibGdx.Checked = Properties.Settings.Default.PACK_ANDROID_LIBGDX;
+            checkBoxPackIOSLibGdx.Checked = Properties.Settings.Default.PACK_IOS_LIBGDX;
+            checkBoxPackAndroidSpritekit.Checked = Properties.Settings.Default.PACK_ANDROID_SPRITEKIT;
+            checkBoxPackIosSpriteKit.Checked = Properties.Settings.Default.PACK_IOS_SPRITEKIT;
+
             textBoxLibGdxDataFileExtention.Text = Properties.Settings.Default.LIBGDX_DATFILE_EXTENTION;
-            checkBoxPackAndroid.Checked = Properties.Settings.Default.PACK_ANDROID;
+
         }
 
         private void buttonDepot_Click(object sender, EventArgs e)

@@ -98,24 +98,24 @@ namespace DanielApp.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool PACK_ANDROID {
+        public bool PACK_ANDROID_LIBGDX {
             get {
-                return ((bool)(this["PACK_ANDROID"]));
+                return ((bool)(this["PACK_ANDROID_LIBGDX"]));
             }
             set {
-                this["PACK_ANDROID"] = value;
+                this["PACK_ANDROID_LIBGDX"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool PACK_IOS {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PACK_IOS_LIBGDX {
             get {
-                return ((bool)(this["PACK_IOS"]));
+                return ((bool)(this["PACK_IOS_LIBGDX"]));
             }
             set {
-                this["PACK_IOS"] = value;
+                this["PACK_IOS_LIBGDX"] = value;
             }
         }
         
@@ -128,6 +128,30 @@ namespace DanielApp.Properties {
             }
             set {
                 this["LIBGDX_DATFILE_EXTENTION"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PACK_ANDROID_SPRITEKIT {
+            get {
+                return ((bool)(this["PACK_ANDROID_SPRITEKIT"]));
+            }
+            set {
+                this["PACK_ANDROID_SPRITEKIT"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PACK_IOS_SPRITEKIT {
+            get {
+                return ((bool)(this["PACK_IOS_SPRITEKIT"]));
+            }
+            set {
+                this["PACK_IOS_SPRITEKIT"] = value;
             }
         }
     }

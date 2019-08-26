@@ -81,7 +81,7 @@ namespace DanielApp
 
         private void CreateOutputDirectories(string folder)
         {
-            if (Properties.Settings.Default.PACK_ANDROID)
+            if (Properties.Settings.Default.PACK_ANDROID_LIBGDX)
             {
                 CreateCleanDirectory(Path.Combine(folder, "V5", "Output"));
                 CreateCleanDirectory(Path.Combine(folder, "V5", "Output", "HD", "libgdx"));
@@ -122,12 +122,12 @@ namespace DanielApp
             foreach (string inputFolder in listBoxFolders.Items)
                 try
                 {
-                    if (Properties.Settings.Default.PACK_ANDROID)
+                    if (Properties.Settings.Default.PACK_ANDROID_LIBGDX)
                     {
                         PrepareAndroidPacking(inputFolder);
                     }
 
-                    if (Properties.Settings.Default.PACK_IOS)
+                    if (Properties.Settings.Default.PACK_IOS_LIBGDX)
                     {
                         PrepareIosPacking(inputFolder);
                     }
@@ -144,7 +144,7 @@ namespace DanielApp
         {
             var v5Dir = Path.Combine(inputFolder, "V5");
 
-            if (Directory.Exists(v5Dir) && Properties.Settings.Default.PACK_ANDROID)
+            if (Directory.Exists(v5Dir) && Properties.Settings.Default.PACK_ANDROID_LIBGDX)
             {
                 Debug.WriteLine("Removing old files...");
                 Directory.Delete(v5Dir, true);
@@ -361,15 +361,25 @@ namespace DanielApp
                 Debug.WriteLine("Model name found : " + modelName);
                 Debug.WriteLine($"Running TexturePacker on {inputFolder} with Model Name: {modelName}");
 
-                if (Properties.Settings.Default.PACK_ANDROID)
+                if (Properties.Settings.Default.PACK_ANDROID_LIBGDX)
                 {
                     LibGdxPacker(tpExecutable, libgdxTps, inputFolder, modelName);
+                }
+
+
+                if (Properties.Settings.Default.PACK_ANDROID_SPRITEKIT)
+                {
                     SpriteKit(tpExecutable, spritekittps, inputFolder, modelName);
                 }
 
-                if (Properties.Settings.Default.PACK_IOS)
+                if (Properties.Settings.Default.PACK_IOS_LIBGDX)
                 {
                     LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
+                    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
+                }
+
+                if (Properties.Settings.Default.PACK_IOS_SPRITEKIT)
+                {
                     SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
                 }
             }
