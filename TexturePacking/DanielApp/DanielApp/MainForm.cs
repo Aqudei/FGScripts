@@ -367,11 +367,11 @@ namespace DanielApp
                     SpriteKit(tpExecutable, spritekittps, inputFolder, modelName);
                 }
 
-                //if (Properties.Settings.Default.PACK_IOS)
-                //{
-                //    LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
-                //    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
-                //}
+                if (Properties.Settings.Default.PACK_IOS)
+                {
+                    LibGdxPackerIos(tpExecutable, libgdxTps, inputFolder, modelName);
+                    SpriteKitPackerIos(tpExecutable, spritekittps, inputFolder, modelName);
+                }
             }
         }
 
@@ -477,6 +477,8 @@ namespace DanielApp
 
         private void LibGdxPacker(string tpExecutable, string tpsFile, string inputFolder, string modelName)
         {
+            var libGdxExt = Properties.Settings.Default.LIBGDX_DATFILE_EXTENTION;
+
             var sdFrame0 = Path.Combine(inputFolder, "V5", "PACKSOURCE", "SD", "Frame0");
             var sdFrame1 = Path.Combine(inputFolder, "V5", "PACKSOURCE", "SD", "Frame1");
             var hdFrame0 = Path.Combine(inputFolder, "V5", "PACKSOURCE", "HD", "Frame0");
@@ -487,19 +489,19 @@ namespace DanielApp
 
             Debug.WriteLine("Packing Libgdx Frame0 SD...");
             Debug.WriteLine($"LibGDX Packing: {sdFrame0}");
-            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0.atlas"}\" \"{sdFrame0}\" \"{tpsFile}\"");
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack0-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + $"-SD_Pack0.{libGdxExt}"}\" \"{sdFrame0}\" \"{tpsFile}\"");
 
             Debug.WriteLine("Packing Libgdx Frame1 SD...");
             Debug.WriteLine($"LibGDX Packing: {sdFrame1}");
-            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1.atlas"}\" \"{sdFrame1}\" \"{tpsFile}\"");
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxSDFrame01 + "/" + modelName + "-SD_Pack1-{n}.png"}\" --data \"{outputLibgdxSDFrame01 + "/" + modelName + $"-SD_Pack1.{libGdxExt}"}\" \"{sdFrame1}\" \"{tpsFile}\"");
 
             Debug.WriteLine("Packing Libgdx Frame0 HD...");
             Debug.WriteLine($"LibGDX Packing: {hdFrame0}");
-            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0.atlas"}\" \"{hdFrame0}\" \"{tpsFile}\"");
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack0-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + $"_Pack0.{libGdxExt}"}\" \"{hdFrame0}\" \"{tpsFile}\"");
 
             Debug.WriteLine("Packing Libgdx Frame1 HD...");
             Debug.WriteLine($"LibGDX Packing: {hdFrame1}");
-            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1.atlas"}\" \"{hdFrame1}\" \"{tpsFile}\"");
+            RunProcess($"\"{tpExecutable}\"", $"--sheet \"{outputLibgdxHDFrame01 + "/" + modelName + "_Pack1-{n}.png"}\" --data \"{outputLibgdxHDFrame01 + "/" + modelName + $"_Pack1.{libGdxExt}"}\" \"{hdFrame1}\" \"{tpsFile}\"");
 
             if (!string.IsNullOrWhiteSpace(_csvLocation))
             {
@@ -700,7 +702,7 @@ namespace DanielApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = @"Last Build on March 7, 2019 4:44 AM (PH)";
+            Text = Application.ExecutablePath;
 
             Debug.Listeners.Add(new DebugTextListener(richTextBoxLogs));
 
