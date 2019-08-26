@@ -118,5 +118,17 @@ namespace DanielApp.Properties {
                 this["PACK_IOS"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("json")]
+        public string LIBGDX_DATFILE_EXTENTION {
+            get {
+                return ((string)(this["LIBGDX_DATFILE_EXTENTION"]));
+            }
+            set {
+                this["LIBGDX_DATFILE_EXTENTION"] = value;
+            }
+        }
     }
 }

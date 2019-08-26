@@ -26,5 +26,8 @@
     <Setting Name="PACK_IOS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="LIBGDX_DATFILE_EXTENTION" Type="System.String" Scope="User">
+      <Value Profile="(Default)">json</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

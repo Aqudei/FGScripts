@@ -68,6 +68,7 @@ namespace DanielApp
             Properties.Settings.Default.SPRITEKIT_TPS_FILE = textBoxSpriteKitTps.Text;
             Properties.Settings.Default.PACK_ANDROID = checkBoxPackAndroid.Checked;
             Properties.Settings.Default.PACK_IOS = checkBoxPackIOS.Checked;
+            Properties.Settings.Default.LIBGDX_DATFILE_EXTENTION = textBoxLibGdxDataFileExtention.Text;
 
             Properties.Settings.Default.Save();
             MessageBox.Show(this, @"Settings successfully saved!", @"Success",
@@ -97,6 +98,7 @@ namespace DanielApp
             checkBoxDoDepot.Checked = Properties.Settings.Default.DO_DEPOT;
 
             checkBoxPackIOS.Checked = Properties.Settings.Default.PACK_IOS;
+            textBoxLibGdxDataFileExtention.Text = Properties.Settings.Default.LIBGDX_DATFILE_EXTENTION;
             checkBoxPackAndroid.Checked = Properties.Settings.Default.PACK_ANDROID;
         }
 
