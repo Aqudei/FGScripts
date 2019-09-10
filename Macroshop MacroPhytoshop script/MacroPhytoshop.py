@@ -27,6 +27,10 @@ import os
 import re
 import glob
 import math
+import logging
+
+logging.basicConfig(filename='app.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 includepath = os.path.abspath(os.path.dirname(sys.argv[0]))
 sys.path.append(includepath)
 
@@ -77,7 +81,7 @@ class MacroPhytoshop(tk.Frame):
             self.set_geometry(settings['geometry'])
             self.set_model_name('')
         except:
-            print("could not load variables")
+            logging.debug("could not load variables")
             self.initialize_saveable_variables()
 
     def save_variables(self):
@@ -119,7 +123,7 @@ class MacroPhytoshop(tk.Frame):
 
     def get_width(self):
         geometry = self.get_geometry()
-        print(geometry)
+        # print(geometry)
         return int(geometry.split('x')[0])
 
     def get_window_x(self):
@@ -917,7 +921,7 @@ class MacroPhytoshop(tk.Frame):
             try:
                 os.makedirs(os.path.join(path, out_path))
             except:
-                print("Could not create directory")
+                logging.debug("Could not create directory")
             images = glob.glob(path + "/*.png")
             for image_path in images:
                 # Check if the image should be expanded
@@ -978,7 +982,7 @@ class MacroPhytoshop(tk.Frame):
             clay = self.get_clay(image_path)
         try:
             if clay == None:
-                print("Clay not found for {}".format(image_path))
+                logging.debug("Clay not found for {}".format(image_path))
                 return []
         except:
             pass
@@ -1170,6 +1174,7 @@ class MacroPhytoshop(tk.Frame):
         AlphaTweak(self)
 
     def process_shadows(self):
+        
         path = os.path.join(self.get_directory(),
                             "Z_SHADOW")
         images = glob.glob(path + "/*.png")
@@ -1290,7 +1295,7 @@ class MacroPhytoshop(tk.Frame):
         try:
             os.makedirs(out_path)
         except:
-            print("Could not create directory")
+            logging.debug("Could not create directory {}".format(out_path))
 
         for i in range(len(out)):
             self.set_script9_message(
@@ -1458,9 +1463,9 @@ class MacroPhytoshop(tk.Frame):
                     tmenu_frame = int(frameSetup.split(",")[2])
                     items.append(tmenu_frame)
                 else:
-                    print('Warning: TMenu frame number was not found in Real3D_V1.csv for model {}'.format(
+                    logging.debug('Warning: TMenu frame number was not found in Real3D_V1.csv for model {}'.format(
                         self.get_model_name()))
-                    print('Using frame # 8. Maybe this will throw error.')
+                    logging.debug('Using frame # 8. Maybe this will throw error.')
                     items.append(8)
 
             i = 0
@@ -1768,7 +1773,7 @@ class MacroPhytoshop(tk.Frame):
                 try:
                     orig = misc.imread(image)
                 except:
-                    print("Could not open " + image)
+                    logging.debug("Could not open " + image)
                     continue
                 shape = np.shape(orig)
                 # Save the cropped image
@@ -1778,7 +1783,7 @@ class MacroPhytoshop(tk.Frame):
                     misc.imsave(
                         image, orig[row_start:row_end, col_start:col_end])
                 except:
-                    print("Could not save " + image)
+                    logging.debug("Could not save " + image)
                     continue
 
         # For each mask, process all the source images with the same index
@@ -1829,7 +1834,7 @@ class MacroPhytoshop(tk.Frame):
                         try:
                             misc.imsave(os.path.join(input_dir, new_name), new)
                         except:
-                            print("Could not save " + new_name)
+                            logging.debug("Could not save " + new_name)
 
         # Delete the process files
         self.set_script2_message("Cleaning up...", "green")
@@ -1860,7 +1865,7 @@ class MacroPhytoshop(tk.Frame):
                 row_end = int(crop_bounds[2])
                 col_end = int(crop_bounds[3])
             except:
-                print('Could not report crop bounds {}'.format(base))
+                logging.debug('Could not report crop bounds {}'.format(base))
                 continue
 
             self.report += base + "\n"
@@ -1876,7 +1881,7 @@ class MacroPhytoshop(tk.Frame):
             with open(os.path.join(self.get_directory(), "crop_report.csv"), "a") as f:
                 f.write(self.mac_csv(self.report))
         except:
-            print("Could not save csv")
+            logging.debug("Could not save Crop Report csv")
 
     def copy_originals(self):
         # Create the folder
@@ -1886,7 +1891,7 @@ class MacroPhytoshop(tk.Frame):
         try:
             os.makedirs(out_path)
         except:
-            print("Could not create directory")
+            logging.debug("Could not create directory {}".format(out_path))
 
         for base, sequence in self.get_mask_sequences().items():
             path = os.path.join(self.get_directory(),
@@ -1900,7 +1905,7 @@ class MacroPhytoshop(tk.Frame):
                 try:
                     shutil.copyfile(src, dst)
                 except:
-                    print('Could not copy')
+                    logging.debug('Could not copy from {} to {}'.format(src,dst))
         self.set_script81_message("Done", "green")
 
     def resize(self, orig, new_width, new_height):
@@ -2088,7 +2093,7 @@ class MacroPhytoshop(tk.Frame):
             try:
                 shutil.copyfile(src, dst)
             except:
-                print("Could not copy file")
+                logging.debug("Could not copy file from {} to {}".format(src,dst))
 
     def run_macro1(self):
         self.set_script1_message("Running", "green")
@@ -2130,7 +2135,7 @@ class MacroPhytoshop(tk.Frame):
                     os.makedirs(os.path.join(directory,
                                              sequence.get_folder()))
                 except:
-                    print("Could not create directory")
+                    logging.debug("Could not create directory: {}".format(os.path.join(directory, sequence.get_folder())))
 
             # Copy the image into the folder
             try:
@@ -2139,7 +2144,7 @@ class MacroPhytoshop(tk.Frame):
                                    os.path.basename(image))
                 shutil.copyfile(src, dst)
             except:
-                print("Could not copy file")
+                print("Could not copy file from {} to {}".format(src,dst))
         # Run crop analysis for the mask sequence folders
         for base, sequence in self.get_mask_sequences().items():
             #images = list(sequence.get_images().values())
@@ -2298,9 +2303,9 @@ class MacroPhytoshop(tk.Frame):
             for p in pats:
                 bounds.append([int(_p.strip()) for _p in p.split(',')])
 
-            print('Input pat array')
+            # print('Input pat array')
             arr = np.array(bounds)
-            print(arr)
+            # print(arr)
 
             row_starts = arr[:, 0]
             col_starts = arr[:, 1]
@@ -2314,7 +2319,7 @@ class MacroPhytoshop(tk.Frame):
 
             largest = "{},{},{},{}".format(
                 row_start, col_start, row_end, col_end)
-            print('Largest pat bounds ' + largest)
+            logging.debug('Largest pat bounds ' + largest)
             return largest
 
         except:
@@ -2323,7 +2328,7 @@ class MacroPhytoshop(tk.Frame):
 
     def __get_largest(self, crop_set1, crop_set2):
 
-        print('Finding largest bounds from {} and {}'.format(crop_set1, crop_set2))
+        logging.debug('Finding largest bounds from {} and {}'.format(crop_set1, crop_set2))
 
         crop_bounds1 = crop_set1.split(",")
         crop_bounds2 = crop_set2.split(",")
@@ -2346,7 +2351,7 @@ class MacroPhytoshop(tk.Frame):
 
             largest = "{},{},{},{}".format(
                 row_start, col_start, row_end, col_end)
-            print('Largest ' + largest)
+            logging.debug('Largest ' + largest)
             return largest
 
         except:
@@ -2445,7 +2450,7 @@ class MacroPhytoshop(tk.Frame):
 
         CONFIG_CSV = os.path.join(self.directory_entry.get(), 'Real3d_V1.csv')
         if not os.path.exists(CONFIG_CSV):
-            print('Real3d_V1.csv was not found')
+            logging.debug('Real3d_V1.csv was not found')
             raise FileNotFoundError()
 
         with open(CONFIG_CSV, 'rt', newline='') as fp:
@@ -2456,7 +2461,7 @@ class MacroPhytoshop(tk.Frame):
                     raise ValueError(
                         "'isReady' and 'frameSetup' columns must be found in Read3d_V1.csv")
 
-                print('config values for {} loaded'.format(item['model']))
+                logging.debug('config values for {} loaded'.format(item['model']))
                 newconfig[item['model']] = item
 
             return newconfig
@@ -2465,7 +2470,7 @@ class MacroPhytoshop(tk.Frame):
     def __read_config(self):
         CONFIG_CSV = os.path.join(self.directory_entry.get(), 'Real3d_V1.csv')
         if not os.path.exists(CONFIG_CSV):
-            print('Real3d_V1.csv was not found')
+            logging.debug('Real3d_V1.csv was not found')
             raise FileNotFoundError()
 
         with open(CONFIG_CSV, 'rt', newline='') as fp:
@@ -2483,7 +2488,7 @@ class MacroPhytoshop(tk.Frame):
                 try:
                     readies[row[0]] = int(row[isRenderIndex])
                 except:
-                    print(
+                    logging.debug(
                         'Cannot read correct isReady value of {}.\nCoercing to zero (0)'.format(row[0]))
                     readies[row[0]] = 0
 
@@ -2496,7 +2501,7 @@ class MacroPhytoshop(tk.Frame):
             return rslt.group(0).strip()
 
     def __get_ready_models(self):
-        print('Fetching folders that are ready to process.')
+        logging.debug('Fetching folders that are ready to process.')
         config = self.__read_config()
 
         skipping = []
